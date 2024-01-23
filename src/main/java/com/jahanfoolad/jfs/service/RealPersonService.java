@@ -6,8 +6,8 @@ import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import java.util.List;
 
 public interface RealPersonService {
-    RealPerson createRealPerson(RealPersonDto realPersonDto);
-    RealPerson getRealPersonByUserId(Long id) throws Exception;
     List<RealPerson> getRealPersons();
+    RealPerson getRealPersonByUserId(Long id) throws Exception;
+    RealPerson createRealPerson(RealPersonDto realPersonDto);
     void deleteRealPerson(Long id);
 }

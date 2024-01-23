@@ -7,12 +7,11 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "CorpPerson")
+@Table(name = "Company")
 @Getter
 @Setter
-public class CorpPerson extends AbstractEntity {
+public class Company extends AbstractEntity{
 
-    //    private Role role;
     @Column
     private String name;
     @Column
@@ -22,7 +21,7 @@ public class CorpPerson extends AbstractEntity {
     @Column
     private String agentName;
     @Column
-    private String cellPhone;
+    private String cellphone;
     @Column
     private String email;
     @Column

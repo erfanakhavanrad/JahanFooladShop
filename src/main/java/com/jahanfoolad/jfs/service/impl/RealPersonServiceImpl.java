@@ -16,6 +16,17 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Autowired
     RealPersonRepository realPersonRepository;
 
+    @Override
+    public List<RealPerson> getRealPersons() {
+        return realPersonRepository.findAll();
+    }
+
+    @Override
+    public RealPerson getRealPersonByUserId(Long id) throws Exception {
+//        realUserRepository.findById(id).get();
+        return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
+    }
+
     // Can throw exception in Header
     @Override
     public RealPerson createRealPerson(RealPersonDto realPersonDto) {
@@ -32,17 +43,6 @@ public class RealPersonServiceImpl implements RealPersonService {
         return modelMapper.map(realPersonRepository.save(realPerson), RealPerson.class);
     }
 
-    @Override
-    public RealPerson getRealPersonByUserId(Long id) throws Exception {
-//        realUserRepository.findById(id).get();
-        return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
-    }
-
-
-    @Override
-    public List<RealPerson> getRealPersons() {
-        return realPersonRepository.findAll();
-    }
 
     @Override
     public void deleteRealPerson(Long id) {
