@@ -3,7 +3,7 @@ package com.jahanfoolad.jfs.controller;
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
-import com.jahanfoolad.jfs.service.UserService;
+import com.jahanfoolad.jfs.service.RealPersonService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/users")
+@RequestMapping("/realperson")
 @RestController
-public class UserController {
+public class RealPersonController {
 
     @Autowired
-    UserService userService;
+    RealPersonService realPersonService;
 
     @Autowired
     ResponseModel responseModel;
@@ -30,11 +30,11 @@ public class UserController {
     }
 
     @GetMapping("/getall")
-    public ResponseModel getUsers(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getRealPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             log.info("GET ALL USERS");
-            List<RealPerson> users = userService.getUsers();
+            List<RealPerson> users = realPersonService.getRealPersons();
             responseModel.setContents(users);
             responseModel.setResult(1);
             responseModel.setRecordCount(users.size());
@@ -52,14 +52,14 @@ public class UserController {
 
     @GetMapping(path = "/getbyid")
 //    public String getUserById(@PathVariable Long userid) {
-    public ResponseModel getUserById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getRealPersonById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 //        , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse
         try {
 
             log.info("-------------");
 
             responseModel.clear();
-            responseModel.setContent(userService.getUserByUserId(id));
+            responseModel.setContent(realPersonService.getRealPersonByUserId(id));
             responseModel.setResult(1);
 //            responseModel.set
 //        return userService.getUserByUserId(userid);
@@ -81,11 +81,11 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createUser(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel createRealPerson(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             responseModel.clear();
-            responseModel.setContent(userService.createUser(realPersonDto));
+            responseModel.setContent(realPersonService.createRealPerson(realPersonDto));
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
@@ -99,11 +99,11 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel deleteRealPerson(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             log.info("DELETE USER");
-            userService.deleteUser(id);
+            realPersonService.deleteRealPerson(id);
             responseModel.clear();
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
