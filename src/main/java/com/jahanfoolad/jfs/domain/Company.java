@@ -30,5 +30,10 @@ public class Company extends AbstractEntity{
     private Boolean isActive;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Contact> contactList;
+<<<<<<< HEAD
+=======
+//    @OneToMany(cascade = {CascadeType.ALL})
+//    private List<Role> roleList;
+>>>>>>> 2ac3ce3 (CorpPerson added and Real Person trimmed.)
 
 }
