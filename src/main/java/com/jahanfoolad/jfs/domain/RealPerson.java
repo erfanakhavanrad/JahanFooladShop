@@ -13,9 +13,7 @@ import java.util.List;
 @Setter
 public class RealPerson extends AbstractEntity {
 
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<Contact> contactList;
-//    private Role role;
+    //    private Role role;
     @Column
     private String firstName;
     @Column
@@ -30,6 +28,7 @@ public class RealPerson extends AbstractEntity {
     private Boolean verified;
     @Column
     private Boolean activated;
-
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Contact> contactList;
 
 }

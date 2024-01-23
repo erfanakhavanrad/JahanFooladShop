@@ -28,12 +28,12 @@ public class UserServiceImpl implements UserService {
     public RealPerson createUser(RealPersonDto realPersonDto) {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        List<Contact> contactList = new ArrayList<>();
-        for (int i = 0; i < realPersonDto.getContactDtoList().size(); i++) {
-            Contact contact = modelMapper.map(realPersonDto.getContactDtoList().get(i), Contact.class);
-            contactList.add(contact);
-        }
-        realPerson.setContactList(contactList);
+//        List<Contact> contactList = new ArrayList<>();
+//        for (int i = 0; i < realPersonDto.getContactDtoList().size(); i++) {
+//            Contact contact = modelMapper.map(realPersonDto.getContactDtoList().get(i), Contact.class);
+//            contactList.add(contact);
+//        }
+//        realPerson.setContactList(contactList);
 
 //        RealPerson newUser = realUserRepository.save(realPerson);
         return modelMapper.map(realUserRepository.save(realPerson), RealPerson.class);

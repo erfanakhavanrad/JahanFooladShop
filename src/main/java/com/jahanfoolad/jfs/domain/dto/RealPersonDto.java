@@ -2,6 +2,7 @@ package com.jahanfoolad.jfs.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
@@ -17,15 +18,15 @@ public class RealPersonDto implements Serializable {
     private String firstName;
     private String lastName;
     private String nationalNumber;
-    private List<ContactDto> contactDtoList;
     private String cellPhone;
     private String email;
     private Boolean verified;
     private Boolean activated;
     private String password;
     private String encryptedPassword;
-    
-    
+    private List<ContactDto> contactDtoList;
+
+
     /*
     *     private Long id = Long.valueOf(10);
     private String userId;
@@ -38,7 +39,6 @@ public class RealPersonDto implements Serializable {
     private Boolean emailVerificationStatus = false;
     private List<AddressDTO> addresses;
     private Collection<String> roles;*/
-    
-    
+
 
 }

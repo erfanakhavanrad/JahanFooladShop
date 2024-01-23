@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.controller;
 
+import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.UserService;
@@ -9,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequestMapping("/users")
@@ -31,8 +34,10 @@ public class UserController {
         responseModel.clear();
         try {
             log.info("GET ALL USERS");
-            responseModel.setContent(userService.getUsers());
+            List<RealPerson> users = userService.getUsers();
+            responseModel.setContents(users);
             responseModel.setResult(1);
+            responseModel.setRecordCount(users.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
