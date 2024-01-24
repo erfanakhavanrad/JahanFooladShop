@@ -4,11 +4,15 @@ import com.jahanfoolad.jfs.domain.File;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+@Getter
+@Setter
 public class ProductDto implements Serializable {
 
     @Serial
