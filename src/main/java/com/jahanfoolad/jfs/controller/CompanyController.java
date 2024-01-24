@@ -47,7 +47,7 @@ public class CompanyController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getCompanyByUserId(@RequestBody Long id,HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getCompanyByUserId(@RequestParam Long id,HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         responseModel.clear();
 
@@ -68,10 +68,10 @@ public class CompanyController {
 
     @PostMapping("/save")
     public ResponseModel createCompany(@RequestBody CompanyDto companyDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse ){
-        responseModel.clear();
 
         try {
             log.info("create company");
+            responseModel.clear();
             responseModel.setContent(companyService.createCompany(companyDto));
             responseModel.setResult(1);
         }catch(DataIntegrityViolationException dataIntegrityViolationException){

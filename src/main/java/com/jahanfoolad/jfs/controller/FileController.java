@@ -48,7 +48,7 @@ public class FileController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getFileByUserId(@RequestBody Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getFileByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         responseModel.clear();
 

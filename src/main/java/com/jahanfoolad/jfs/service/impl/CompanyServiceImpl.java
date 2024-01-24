@@ -5,6 +5,7 @@ import com.jahanfoolad.jfs.domain.dto.CompanyDto;
 import com.jahanfoolad.jfs.jpaRepository.CompanyRepository;
 import com.jahanfoolad.jfs.service.CompanyService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class CompanyServiceImpl  implements CompanyService {
     @Override
     public Company createCompany(CompanyDto companyDto) {
         ModelMapper  modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Company company = modelMapper.map(companyDto,Company.class);
         return modelMapper.map(companyRepository.save(company) , Company.class);
     }

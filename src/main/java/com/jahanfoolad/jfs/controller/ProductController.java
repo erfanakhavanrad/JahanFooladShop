@@ -46,7 +46,7 @@ public class ProductController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getProductByUserId(@RequestBody Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getProductByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         responseModel.clear();
 
@@ -67,10 +67,10 @@ public class ProductController {
 
     @PostMapping("/save")
     public ResponseModel createProduct(@RequestBody ProductDto productDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse ){
-        responseModel.clear();
 
         try {
             log.info("create product");
+            responseModel.clear();
             responseModel.setContent(productService.createProduct(productDto));
             responseModel.setResult(1);
         }catch(DataIntegrityViolationException dataIntegrityViolationException){
