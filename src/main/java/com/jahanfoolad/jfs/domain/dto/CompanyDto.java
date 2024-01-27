@@ -17,6 +17,7 @@ public class CompanyDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -569153872648535136L;
 
+    private Long   id;
     private String name;
     private String nationalId;
     private String economicCode;

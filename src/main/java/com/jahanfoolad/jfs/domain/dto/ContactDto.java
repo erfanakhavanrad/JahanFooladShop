@@ -14,6 +14,7 @@ public class ContactDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 4230281807623583094L;
 
+    private Long   id;
     private String province;
     private String city;
     private String street;

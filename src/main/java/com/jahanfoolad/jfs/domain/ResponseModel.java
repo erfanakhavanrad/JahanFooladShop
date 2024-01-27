@@ -22,6 +22,7 @@ public class ResponseModel <T>{
         try {
             Class<?> localClass = local.getClass();
             Object merged = localClass.newInstance();
+
             for (Field field : localClass.getDeclaredFields()) {
                 field.setAccessible(true);
                 Object localValue = field.get(local);

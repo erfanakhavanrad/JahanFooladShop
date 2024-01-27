@@ -28,7 +28,7 @@ public class Company extends AbstractEntity{
     private Boolean verified;
     @Column
     private Boolean isActive;
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL} , fetch = FetchType.EAGER)
     private List<Contact> contactList;
 //    @OneToMany(cascade = {CascadeType.ALL})
 //    private List<Role> roleList;
