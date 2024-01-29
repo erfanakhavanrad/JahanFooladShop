@@ -4,8 +4,10 @@ import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.dto.CategoryDto;
 import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.service.CategoryService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 
 import java.util.List;
 
@@ -26,11 +28,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category createCategory(CategoryDto categoryDto) {
-        return null;
+        ModelMapper modelMapper = new ModelMapper();
+        Category category = modelMapper.map(categoryDto, Category.class);
+        return modelMapper.map(categoryRepository.save(category), Category.class);
     }
 
     @Override
     public void deleteCategory(Long id) {
-
+        categoryRepository.deleteById(id);
     }
 }

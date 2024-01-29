@@ -26,7 +26,7 @@ public class FileController {
     ResponseModel responseModel;
 
     @GetMapping("/getAll")
-    public ResponseModel getFiles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+    public ResponseModel getFiles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
@@ -36,9 +36,9 @@ public class FileController {
             responseModel.setResult(1);
             responseModel.setRecordCount(files.size());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -48,7 +48,7 @@ public class FileController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getFileByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getFileByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
 
@@ -56,9 +56,9 @@ public class FileController {
             log.info("get file by user id");
             responseModel.setContent(fileService.getFileByUserId(id));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -68,16 +68,16 @@ public class FileController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createFile(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse ){
+    public ResponseModel createFile(@RequestBody FileDto fileDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
 
         try {
             log.info("create file");
             responseModel.setContent(fileService.createFile(fileDto));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -88,16 +88,14 @@ public class FileController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteFile(@PathVariable("id") Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel deleteFile(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
 
         try {
             log.info("delete file");
             fileService.deleteFile(id);
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());

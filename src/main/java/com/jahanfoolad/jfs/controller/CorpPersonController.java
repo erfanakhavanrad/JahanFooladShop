@@ -87,8 +87,6 @@ public class CorpPersonController {
             corpPersonService.deleteCorpPerson(id);
             responseModel.clear();
             responseModel.setResult(1);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

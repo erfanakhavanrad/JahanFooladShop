@@ -6,13 +6,14 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
 public class RoleDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 7901772115064466693L;
-    private Privilege privilege;
+    private List<Privilege> privilege;
     private String roleName;
 
 }

@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Category extends AbstractEntity {
+   @Column
     private String name;
-    private String fileName;
+   @Column
+   private String fileName;
 }

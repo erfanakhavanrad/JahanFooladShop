@@ -1,10 +1,8 @@
 package com.jahanfoolad.jfs.controller;
 
 
-import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.Role;
-import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import com.jahanfoolad.jfs.domain.dto.RoleDto;
 import com.jahanfoolad.jfs.service.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,8 +87,6 @@ public class RoleController {
             roleService.deleteRole(id);
             responseModel.clear();
             responseModel.setResult(1);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

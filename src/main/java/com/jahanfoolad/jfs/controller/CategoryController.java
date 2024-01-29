@@ -78,6 +78,21 @@ public class CategoryController {
         return responseModel;
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseModel deleteCategory(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        responseModel.clear();
+        try {
+            categoryService.deleteCategory(id);
+            responseModel.clear();
+            responseModel.setResult(1);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
 
 
 }

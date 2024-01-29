@@ -1,9 +1,5 @@
 package com.jahanfoolad.jfs.domain.dto;
 
-import com.jahanfoolad.jfs.domain.Contact;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
