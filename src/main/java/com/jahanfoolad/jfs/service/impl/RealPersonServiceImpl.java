@@ -4,17 +4,25 @@ import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.service.RealPersonService;
+import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class RealPersonServiceImpl implements RealPersonService {
 
     @Autowired
     RealPersonRepository realPersonRepository;
+
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
 
     @Override
     public List<RealPerson> getRealPersons() {
@@ -24,7 +32,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Override
     public RealPerson getRealPersonByUserId(Long id) throws Exception {
 //        realUserRepository.findById(id).get();
-        return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
+        return realPersonRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message",null, Locale.ENGLISH)));
     }
 
     // Can throw exception in Header

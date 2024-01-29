@@ -16,7 +16,6 @@ public class JfsApplication {
         SpringApplication.run(JfsApplication.class, args);
     }
 
-
     @Configuration
     public static class AppConfig{
         @Bean
