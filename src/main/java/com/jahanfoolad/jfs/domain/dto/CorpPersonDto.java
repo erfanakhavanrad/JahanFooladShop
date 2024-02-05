@@ -19,7 +19,7 @@ public class CorpPersonDto implements Serializable {
     private String cellPhone;
     private String email;
     private Boolean verified;
-    private Boolean isActive;
+    private Boolean activated;
     private List<ContactDto> contactList;
 
 }

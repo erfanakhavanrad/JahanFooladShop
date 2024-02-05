@@ -28,7 +28,9 @@ public class CorpPerson extends AbstractEntity {
     @Column
     private Boolean verified;
     @Column
-    private Boolean isActive;
+    private Boolean activated;
+    @Column
+    private String password;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Contact> contactList;
 
