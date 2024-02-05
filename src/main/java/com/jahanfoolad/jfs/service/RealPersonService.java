@@ -10,4 +10,5 @@ public interface RealPersonService {
     RealPerson getRealPersonByUserId(Long id) throws Exception;
     RealPerson createRealPerson(RealPersonDto realPersonDto);
     void deleteRealPerson(Long id);
+    RealPerson login(RealPerson realPerson) throws Exception;
 }

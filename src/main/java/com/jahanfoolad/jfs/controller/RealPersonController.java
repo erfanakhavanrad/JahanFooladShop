@@ -29,8 +29,30 @@ public class RealPersonController {
         return "Hello.";
     }
 
+    @GetMapping(path = "/login")
+    public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+
+        responseModel.clear();
+        try {
+            RealPerson user = realPersonService.login(realPerson);
+            responseModel.setContent(user);
+            responseModel.setResult(1);
+            responseModel.setRecordCount(1);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+
+    }
+
     @GetMapping("/getall")
-    public ResponseModel getRealPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getRealPeople(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             log.info("GET ALL USERS");
