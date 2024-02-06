@@ -14,4 +14,6 @@ public interface RealPersonRepository extends JpaRepository<RealPerson, Long> {
 //    @Query("SELECT rp FROM RealPerson AS rp WHERE rp.password = :password")
 //    RealPerson validateUserPassword(@Param("password") String password);
 
+
+
 }

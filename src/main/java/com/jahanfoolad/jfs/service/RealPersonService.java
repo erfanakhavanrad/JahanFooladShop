@@ -15,4 +15,11 @@ public interface RealPersonService {
     void deleteRealPerson(Long id);
 
     RealPerson login(RealPerson realPerson) throws Exception;
+
+    RealPerson findByMobile(RealPerson realPerson) throws Exception;
+
+    void resetPass(RealPerson byMobile, String newPassword) throws Exception;
+
+    String generatePassword(RealPerson realPerson);
+
 }

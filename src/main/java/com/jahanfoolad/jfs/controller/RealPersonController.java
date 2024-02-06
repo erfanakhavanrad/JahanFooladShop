@@ -4,6 +4,7 @@ import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
+import com.jahanfoolad.jfs.service.SmsService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +25,33 @@ public class RealPersonController {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    SmsService smsService;
+
     @GetMapping(path = "/test")
     public String testMethod() {
         return "Hello.";
+    }
+
+
+//    @GetMapping(path = "/sms")
+//    public String testMethodsms() {
+//        smsService.SendSMS("09353368463", "50002002810097", "Hello", false);
+//
+//        return "Hello.";
+//    }
+
+    @GetMapping(path = "/forgetpassword")
+    public ResponseModel forgetPassword(@RequestParam String cellPhone) throws Exception {
+        RealPerson realPerson = new RealPerson();
+        realPerson.setCellPhone(cellPhone);
+        RealPerson byMobile = realPersonService.findByMobile(realPerson);
+        String newPassword = realPersonService.generatePassword(byMobile);
+        smsService.SendSMS(byMobile.getCellPhone(), newPassword, false);
+        realPersonService.resetPass(byMobile, newPassword);
+//        smsService.SendSMS("09353368463", "50002002810097", "Hello", false);
+
+        return responseModel;
     }
 
     @GetMapping(path = "/login")

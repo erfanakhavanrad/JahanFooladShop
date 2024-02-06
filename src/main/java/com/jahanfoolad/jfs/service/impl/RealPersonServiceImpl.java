@@ -66,13 +66,28 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public RealPerson login(RealPerson realPerson) throws Exception {
-        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
-        if (userByPhoneNumber == null)
-            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+//        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
+//        if (userByPhoneNumber == null)
+//            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        RealPerson userByPhoneNumber = findByMobile(realPerson);
         if (!userByPhoneNumber.getPassword().equals(realPerson.getPassword())) {
             throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
         }
         return userByPhoneNumber;
     }
 
+    @Override
+    public RealPerson findByMobile(RealPerson realPerson) throws Exception {
+        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
+        if (userByPhoneNumber == null)
+            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        return userByPhoneNumber;
+    }
+
+    @Override
+    public void resetPass(RealPerson byMobile, String newPassword) throws Exception {
+        RealPerson realPerson = realPersonRepository.findById(byMobile.getId()).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        realPerson.setPassword(newPassword);
+//        realPersonRepository.
+    }
 }
