@@ -45,4 +45,17 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     public void deleteCorpPerson(Long id) {
         corpPersonRepository.deleteById(id);
     }
+
+    @Override
+    public CorpPerson login(CorpPerson corpPerson) throws Exception {
+        CorpPerson userByPhoneNumber = corpPersonRepository.findByCellPhone(corpPerson.getCellPhone());
+        if (userByPhoneNumber == null)
+            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        if (!userByPhoneNumber.getPassword().equals(corpPerson.getPassword())) {
+            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
+        }
+        return userByPhoneNumber;
+    }
+
+
 }
