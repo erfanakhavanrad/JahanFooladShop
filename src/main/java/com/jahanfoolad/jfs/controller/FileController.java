@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,12 @@ public class FileController {
 
     @Autowired
     ResponseModel responseModel;
+
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
 
     @GetMapping("/getAll")
     public ResponseModel getFiles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
@@ -104,6 +111,25 @@ public class FileController {
             responseModel.setResult(0);
         }
         return responseModel;
+    }
+
+    @PostMapping("/update")
+    public ResponseModel updateCompany(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+
+        try{
+            log.info("update file");
+            responseModel.setContent(fileService.updateFile(fileDto));
+            responseModel.setResult(success);
+        }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(fail);
+        }catch (Exception e){
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return  responseModel;
     }
 
 }

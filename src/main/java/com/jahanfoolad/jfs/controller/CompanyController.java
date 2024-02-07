@@ -34,8 +34,6 @@ public class CompanyController {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
-
-
     @Value("${SUCCESS_RESULT}")
     int success;
 
@@ -127,6 +125,7 @@ public class CompanyController {
     public ResponseModel updateCompany(@RequestBody CompanyDto companyDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{
+            log.info("update company");
             responseModel.setContent(companyService.updateCompany(companyDto));
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
@@ -163,11 +162,11 @@ public class CompanyController {
     }
 
     @GetMapping("/findByProvince")
-    public ResponseModel findByProvince(ContactDto contact ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
+    public ResponseModel findByProvince(ContactDto contactDto ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
         responseModel.clear();
         try{
-            log.info("find by category");
-            Page<Company> companies = companyService.findByProvince(contact,pageNo,perPage);
+            log.info("find by province");
+            Page<Company> companies = companyService.findByProvince(contactDto,pageNo,perPage);
             responseModel.setContent(companies);
             responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
@@ -184,14 +183,14 @@ public class CompanyController {
     }
 
     @GetMapping("/findByCity")
-    public ResponseModel findByCity(@RequestParam Long cityId , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
+    public ResponseModel findByCity(ContactDto contactDto ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
         responseModel.clear();
         try{
-            log.info("find by category");
-            List<Company> companies = companyService.findByCity(cityId);
+            log.info("find by city");
+            Page<Company> companies = companyService.findByCity(contactDto,pageNo,perPage);
             responseModel.setContent(companies);
             responseModel.setResult(1);
-            responseModel.setRecordCount(companies.size());
+            responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setError(dataIntegrityViolationException.getMessage());

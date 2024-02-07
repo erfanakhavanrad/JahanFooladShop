@@ -26,7 +26,6 @@ public class CompanyServiceImpl  implements CompanyService {
 
     @Autowired
     CompanyRepository  companyRepository;
-
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
     @Resource(name = "enMessageSource")
@@ -82,22 +81,24 @@ public class CompanyServiceImpl  implements CompanyService {
     }
 
 
-
-
     @Override
     public Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        ModelMapper modelMapper = new ModelMapper();
+        Contact contact = modelMapper.map(contactDto, Contact.class);
+        contact.setId(702l);
+        List<Contact> contactList = new ArrayList<>();
+        contactList.add(contact);
+        return companyRepository.findAllByContactListIn(contactList , PageRequest.of(pageNo,perPage));
+    }
+
+    @Override
+    public Page<Company> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage) {
         ModelMapper modelMapper = new ModelMapper();
         Contact contact = modelMapper.map(contactDto, Contact.class);
         contact.setId(702l);
         List<Contact> contactDtoList = new ArrayList<>();
         contactDtoList.add(contact);
         return companyRepository.findAllByContactListIn(contactDtoList , PageRequest.of(pageNo,perPage));
-    }
-
-    @Override
-    public List<Company> findByCity(Long cityId) {
-//        return companyRepository.findByCityId(cityId);
-        return null;
     }
 
 }

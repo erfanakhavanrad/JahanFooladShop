@@ -1,20 +1,36 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.domain.Company;
 import com.jahanfoolad.jfs.domain.File;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
 import com.jahanfoolad.jfs.jpaRepository.FileRepository;
 import com.jahanfoolad.jfs.service.FileService;
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
+@Slf4j
 @Service
 public class FileServiceImpl implements FileService {
 
     @Autowired
     FileRepository fileRepository;
+
+    @Autowired
+    ResponseModel responseModel;
+
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
+
 
     @Override
     public List<File> getFiles() {
@@ -23,7 +39,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File getFileByUserId(Long id) throws Exception {
-        return fileRepository.findById(id).orElseThrow ( () -> new Exception("company not found"));
+        return fileRepository.findById(id).orElseThrow ( () -> new Exception(enMessageSource.getMessage("failed_message",null, Locale.ENGLISH)));
     }
 
     @Override
@@ -36,5 +52,19 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteFile(Long id) {
        fileRepository.deleteById(id);
+    }
+
+    @Override
+    public File updateFile(FileDto fileDto) throws Exception {
+        log.info("update file");
+        responseModel.clear();
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        File foundFile =getFileByUserId(fileDto.getId());
+        File newFile = modelMapper.map(fileDto,File.class);
+        File updated = (File) responseModel.merge(foundFile,newFile);
+
+        return fileRepository.save(updated);
     }
 }

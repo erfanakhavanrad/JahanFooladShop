@@ -14,7 +14,7 @@ public interface CompanyService {
     void deleteCompany(Long id);
     Company updateCompany(CompanyDto companyDto) throws Exception;
     List<Company> findByCategory(Long categoryId);
-    Page<Company> findByProvince(ContactDto name, Integer pageNo, Integer perPage);
-    List<Company> findByCity(Long cityId);
+    Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage);
+    Page<Company> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage);
 
 }
