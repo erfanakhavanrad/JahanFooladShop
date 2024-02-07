@@ -22,6 +22,30 @@ public class CorpPersonController {
     @Autowired
     ResponseModel responseModel;
 
+
+    @GetMapping(path = "/login")
+    public ResponseModel login(@RequestBody CorpPerson corpPerson, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+
+        responseModel.clear();
+        try {
+            CorpPerson user = corpPersonService.login(corpPerson);
+            responseModel.setContent(user);
+            responseModel.setResult(1);
+            responseModel.setRecordCount(1);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+
+    }
+
+
     @GetMapping("/getall")
     public ResponseModel getCorpPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
@@ -87,8 +111,6 @@ public class CorpPersonController {
             corpPersonService.deleteCorpPerson(id);
             responseModel.clear();
             responseModel.setResult(1);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

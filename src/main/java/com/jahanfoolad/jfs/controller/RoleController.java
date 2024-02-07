@@ -1,40 +1,36 @@
 package com.jahanfoolad.jfs.controller;
 
 
-import com.jahanfoolad.jfs.domain.File;
 import com.jahanfoolad.jfs.domain.ResponseModel;
-import com.jahanfoolad.jfs.domain.dto.FileDto;
-import com.jahanfoolad.jfs.service.FileService;
+import com.jahanfoolad.jfs.domain.Role;
+import com.jahanfoolad.jfs.domain.dto.RoleDto;
+import com.jahanfoolad.jfs.service.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
-@RequestMapping("/file")
+@RequestMapping("/role")
 @RestController
-public class FileController {
-
+public class RoleController {
     @Autowired
-    FileService fileService;
+    RoleService roleService;
 
     @Autowired
     ResponseModel responseModel;
 
-    @GetMapping("/getAll")
-    public ResponseModel getFiles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
+    @GetMapping("/getall")
+    public ResponseModel getRoles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
-            log.info("get file");
-            List<File> files = fileService.getFiles();
-            responseModel.setContent(files);
+            List<Role> roles = roleService.getRoles();
+            responseModel.setContents(roles);
             responseModel.setResult(1);
-            responseModel.setRecordCount(files.size());
+            responseModel.setRecordCount(roles.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
@@ -47,15 +43,13 @@ public class FileController {
         return responseModel;
     }
 
-    @GetMapping("/getbyid")
-    public ResponseModel getFileByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        responseModel.clear();
-
+    @GetMapping(path = "/getbyid")
+    public ResponseModel getRoleById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
-            log.info("get file by user id");
-            responseModel.setContent(fileService.getFileByUserId(id));
+            responseModel.clear();
+            responseModel.setContent(roleService.getRoleByUserId(id));
             responseModel.setResult(1);
+
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
@@ -68,12 +62,11 @@ public class FileController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createFile(@RequestBody FileDto fileDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
+    public ResponseModel createRole(@RequestBody RoleDto roleDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
-            log.info("create file");
-            responseModel.setContent(fileService.createFile(fileDto));
+            responseModel.clear();
+            responseModel.setContent(roleService.createRole(roleDto));
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
@@ -84,16 +77,15 @@ public class FileController {
             responseModel.setResult(0);
         }
         return responseModel;
-
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteFile(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseModel deleteRole(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        responseModel.clear();
         try {
-            log.info("delete file");
-            fileService.deleteFile(id);
+            roleService.deleteRole(id);
+            responseModel.clear();
             responseModel.setResult(1);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());

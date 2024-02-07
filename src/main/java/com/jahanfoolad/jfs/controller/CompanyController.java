@@ -43,7 +43,7 @@ public class CompanyController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getCompanyPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+    public ResponseModel getCompanyPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
@@ -53,9 +53,9 @@ public class CompanyController {
             responseModel.setResult(1);
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
-         responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -65,7 +65,7 @@ public class CompanyController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getCompanyByUserId(@RequestParam Long id,HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getCompanyByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
 
@@ -73,9 +73,9 @@ public class CompanyController {
             log.info("get company by user id");
             responseModel.setContent(companyService.getCompanyById(id));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -85,16 +85,16 @@ public class CompanyController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createCompany(@RequestBody CompanyDto companyDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse ){
+    public ResponseModel createCompany(@RequestBody CompanyDto companyDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             log.info("create company");
             responseModel.clear();
             responseModel.setContent(companyService.createCompany(companyDto));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -105,16 +105,14 @@ public class CompanyController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteCompany(@PathVariable("id") Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel deleteCompany(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
 
         try {
-             log.info("delete company");
-             companyService.deleteCompany(id);
-             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+            log.info("delete company");
+            companyService.deleteCompany(id);
+            responseModel.setResult(1);
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());

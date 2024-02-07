@@ -14,6 +14,8 @@ import java.util.List;
 public class RealPerson extends AbstractEntity {
 
     //    private Role role;
+    @Column(unique = true)
+    private String userName;
     @Column
     private String firstName;
     @Column

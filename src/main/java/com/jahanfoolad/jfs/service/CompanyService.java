@@ -10,6 +10,7 @@ import java.util.List;
 public interface CompanyService {
     List<Company> getCompanyPersons();
     Company getCompanyById(Long id) throws Exception;
+    Company getCompanyByUserId(Long id) throws Exception;
     Company createCompany(CompanyDto companyDto);
     void deleteCompany(Long id);
     Company updateCompany(CompanyDto companyDto) throws Exception;

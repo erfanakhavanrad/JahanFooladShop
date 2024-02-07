@@ -1,9 +1,5 @@
 package com.jahanfoolad.jfs.domain.dto;
 
-import com.jahanfoolad.jfs.domain.Contact;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +19,7 @@ public class CorpPersonDto implements Serializable {
     private String cellPhone;
     private String email;
     private Boolean verified;
-    private Boolean isActive;
+    private Boolean activated;
     private List<ContactDto> contactList;
 
 }

@@ -55,19 +55,24 @@ public class RealPersonServiceImpl implements RealPersonService {
     public RealPerson createRealPerson(RealPersonDto realPersonDto) {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        String password = generatePassword(realPerson);
-        realPerson.setPassword(password);
-        realPerson.setUserName(realPersonDto.getCellPhone());
-        RealPerson save = realPersonRepository.save(realPerson);
-        smsService.SendSMS(realPerson.getCellPhone(), "#CODE: " + password, false);
-        return save;
+        realPerson.setPassword(generatePassword(realPerson));
+        return modelMapper.map(realPersonRepository.save(realPerson), RealPerson.class);
     }
+
+
 
     @Override
     public void deleteRealPerson(Long id) {
         realPersonRepository.deleteById(id);
     }
 
+
+    @Override
+    public void resetPass(RealPerson byMobile, String newPassword) throws Exception {
+        RealPerson realPerson = realPersonRepository.findById(byMobile.getId()).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        realPerson.setPassword(newPassword);
+//        realPersonRepository.
+    }
     @Override
     public RealPerson login(RealPerson realPerson) throws Exception {
 //        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());

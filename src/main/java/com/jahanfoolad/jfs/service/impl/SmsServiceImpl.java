@@ -3,6 +3,8 @@ package com.jahanfoolad.jfs.service.impl;
 import com.google.gson.Gson;
 import com.jahanfoolad.jfs.domain.SmsRestResponse;
 import com.jahanfoolad.jfs.service.SmsService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,6 +36,7 @@ public class SmsServiceImpl implements SmsService {
     @Value("${sms.privateLine}")
     private String from;
 
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
     @Resource(name = "enMessageSource")
@@ -42,6 +45,7 @@ public class SmsServiceImpl implements SmsService {
     private final String endPoint = "https://rest.payamak-panel.com/api/%s";
 
     //    private final String SMS_TEXT;
+
     public SmsServiceImpl(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
         gson = new Gson();
@@ -57,11 +61,11 @@ public class SmsServiceImpl implements SmsService {
         return headers;
     }
 
-
+    @Override
     public SmsRestResponse SendSMS(String to, String text, Boolean isFlash) {
         String operation = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        String url = String.format(endPoint, "SendSMS/" + operation);
+        String url = String.format(endPoint, "SendSMS/"+operation);
         Map<String, Object> map = new HashMap<>();
         map.put("username", this.userName);
         map.put("password", this.password);

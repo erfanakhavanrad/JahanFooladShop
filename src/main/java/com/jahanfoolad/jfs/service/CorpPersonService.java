@@ -14,4 +14,6 @@ public interface CorpPersonService {
 
     void deleteCorpPerson(Long id);
 
+    CorpPerson login(CorpPerson corpPerson) throws Exception;
+
 }

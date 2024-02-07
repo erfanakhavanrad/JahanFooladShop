@@ -8,9 +8,11 @@ import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.jpaRepository.CompanyRepository;
 import com.jahanfoolad.jfs.service.CompanyService;
 import jakarta.annotation.Resource;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +43,9 @@ public class CompanyServiceImpl  implements CompanyService {
     }
 
     @Override
+    public Company getCompanyByUserId(Long id) throws Exception {
+        return companyRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+    }
     public Company getCompanyById(Long id) throws Exception {
         return companyRepository.findById(id).orElseThrow ( () -> new Exception(enMessageSource.getMessage("failed_message",null,Locale.ENGLISH)));
     }
