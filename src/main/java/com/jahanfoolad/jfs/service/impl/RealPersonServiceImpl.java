@@ -10,7 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -55,10 +54,13 @@ public class RealPersonServiceImpl implements RealPersonService {
     public RealPerson createRealPerson(RealPersonDto realPersonDto) {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        realPerson.setPassword(generatePassword(realPerson));
-        return modelMapper.map(realPersonRepository.save(realPerson), RealPerson.class);
+        newPassword = generatePassword(realPerson);
+        realPerson.setPassword(newPassword);
+        realPerson.setUserName(realPerson.getCellPhone());
+        RealPerson save = realPersonRepository.save(realPerson);
+        smsService.SendSMS(realPersonDto.getCellPhone(), newPassword, false);
+        return save;
     }
-
 
 
     @Override
@@ -73,6 +75,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         realPerson.setPassword(newPassword);
 //        realPersonRepository.
     }
+
     @Override
     public RealPerson login(RealPerson realPerson) throws Exception {
 //        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
