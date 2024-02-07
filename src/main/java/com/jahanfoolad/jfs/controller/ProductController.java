@@ -33,7 +33,7 @@ public class ProductController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getProducts(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse){
+    public ResponseModel getProducts(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
@@ -43,9 +43,9 @@ public class ProductController {
             responseModel.setResult(1);
             responseModel.setRecordCount(products.size());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -55,7 +55,7 @@ public class ProductController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getProductByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel getProductByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
 
@@ -63,9 +63,9 @@ public class ProductController {
             log.info("get product by user id");
             responseModel.setContent(productService.getProductById(id));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -75,16 +75,16 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createProduct(@RequestBody ProductDto productDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse ){
+    public ResponseModel createProduct(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             log.info("create product");
             responseModel.clear();
             responseModel.setContent(productService.createProduct(productDto));
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -95,16 +95,14 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteProduct(@PathVariable("id") Long id, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel deleteProduct(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
 
         try {
             log.info("delete product");
             productService.deleteProduct(id);
             responseModel.setResult(1);
-        }catch(DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        }catch(Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());

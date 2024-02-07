@@ -4,17 +4,25 @@ import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.CorpPersonRepository;
 import com.jahanfoolad.jfs.service.CorpPersonService;
+import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class CorpPersonServiceImpl implements CorpPersonService {
 
     @Autowired
     CorpPersonRepository corpPersonRepository;
+
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
 
     @Override
     public List<CorpPerson> getCorpPeople() {
@@ -23,7 +31,7 @@ public class CorpPersonServiceImpl implements CorpPersonService {
 
     @Override
     public CorpPerson getCorpPersonByUserId(Long id) throws Exception {
-        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception("CorpNot Found"));
+        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
     }
 
     @Override
@@ -37,4 +45,17 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     public void deleteCorpPerson(Long id) {
         corpPersonRepository.deleteById(id);
     }
+
+    @Override
+    public CorpPerson login(CorpPerson corpPerson) throws Exception {
+        CorpPerson userByPhoneNumber = corpPersonRepository.findByCellPhone(corpPerson.getCellPhone());
+        if (userByPhoneNumber == null)
+            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        if (!userByPhoneNumber.getPassword().equals(corpPerson.getPassword())) {
+            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
+        }
+        return userByPhoneNumber;
+    }
+
+
 }

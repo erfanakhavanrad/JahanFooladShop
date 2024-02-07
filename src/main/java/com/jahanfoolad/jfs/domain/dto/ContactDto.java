@@ -23,6 +23,6 @@ public class ContactDto implements Serializable {
     private String unit;
     private String postalCode;
     private String telephone;
-
-
+    private String longitude;
+    private String latitude;
 }

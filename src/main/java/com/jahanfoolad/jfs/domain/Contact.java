@@ -28,5 +28,9 @@ public class Contact extends AbstractEntity {
     private String postalCode;
     @Column
     private String telephone;
+    @Column
+    private String longitude;
+    @Column
+    private String latitude;
 
 }

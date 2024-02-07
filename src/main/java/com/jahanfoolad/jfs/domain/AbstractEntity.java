@@ -33,10 +33,10 @@ abstract public class AbstractEntity {
 //    private Users createdBy;
 //    private Integer lastModifiedBy;
 
-    @Column(name = "")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "")
+    @Column(name = "lastModifiedDate")
     private Date lastModifiedDate;
 
 }

@@ -1,9 +1,9 @@
 package com.jahanfoolad.jfs.controller;
 
-import com.jahanfoolad.jfs.domain.CorpPerson;
+import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.ResponseModel;
-import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
-import com.jahanfoolad.jfs.service.CorpPersonService;
+import com.jahanfoolad.jfs.domain.dto.CategoryDto;
+import com.jahanfoolad.jfs.service.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,48 +12,23 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/corpperson")
+@RequestMapping("/category")
 @RestController
-public class CorpPersonController {
-
+public class CategoryController {
     @Autowired
-    CorpPersonService corpPersonService;
+    CategoryService categoryService;
 
     @Autowired
     ResponseModel responseModel;
 
-
-    @GetMapping(path = "/login")
-    public ResponseModel login(@RequestBody CorpPerson corpPerson, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        responseModel.clear();
-        try {
-            CorpPerson user = corpPersonService.login(corpPerson);
-            responseModel.setContent(user);
-            responseModel.setResult(1);
-            responseModel.setRecordCount(1);
-            responseModel.setStatus(httpServletResponse.getStatus());
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
-        }
-        return responseModel;
-
-    }
-
-
     @GetMapping("/getall")
-    public ResponseModel getCorpPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getCategories(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
-            List<CorpPerson> corpPeople = corpPersonService.getCorpPeople();
-            responseModel.setContents(corpPeople);
+            List<Category> categories = categoryService.getCategories();
+            responseModel.setContents(categories);
             responseModel.setResult(1);
-            responseModel.setRecordCount(corpPeople.size());
+            responseModel.setRecordCount(categories.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
@@ -68,10 +43,10 @@ public class CorpPersonController {
 
 
     @GetMapping(path = "/getbyid")
-    public ResponseModel getCorpPersonById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getCategoryById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
-            responseModel.setContent(corpPersonService.getCorpPersonByUserId(id));
+            responseModel.setContent(categoryService.getCategoryById(id));
             responseModel.setResult(1);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
@@ -85,13 +60,12 @@ public class CorpPersonController {
         return responseModel;
     }
 
-
     @PostMapping("/save")
-    public ResponseModel createCorpPerson(@RequestBody CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel createCategory(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             responseModel.clear();
-            responseModel.setContent(corpPersonService.createCorpPerson(corpPersonDto));
+            responseModel.setContent(categoryService.createCategory(categoryDto));
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
@@ -105,10 +79,10 @@ public class CorpPersonController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteCorpPerson(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel deleteCategory(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
-            corpPersonService.deleteCorpPerson(id);
+            categoryService.deleteCategory(id);
             responseModel.clear();
             responseModel.setResult(1);
         } catch (Exception e) {

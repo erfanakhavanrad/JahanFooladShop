@@ -1,7 +1,5 @@
 package com.jahanfoolad.jfs.service.impl;
 
-import com.jahanfoolad.jfs.domain.Contact;
-import com.jahanfoolad.jfs.domain.File;
 import com.jahanfoolad.jfs.domain.Product;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
