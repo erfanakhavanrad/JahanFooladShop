@@ -4,11 +4,17 @@ import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.service.RealPersonService;
+import com.jahanfoolad.jfs.service.SmsService;
+import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 @Service
 public class RealPersonServiceImpl implements RealPersonService {
@@ -16,10 +22,17 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Autowired
     RealPersonRepository realPersonRepository;
 
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
+
     @Override
     public List<RealPerson> getRealPersons() {
         return realPersonRepository.findAll();
     }
+
+    private String newPassword;
 
     @Override
     public RealPerson getRealPersonByUserId(Long id) throws Exception {
@@ -27,26 +40,89 @@ public class RealPersonServiceImpl implements RealPersonService {
         return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
     }
 
+
+    @Override
+    public RealPerson getRealPersonByUsername(String userName) throws Exception {
+        RealPerson byUserName = realPersonRepository.findByUserName(userName);
+        if (byUserName != null) {
+            return byUserName;
+        } else throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+    }
+
+
     // Can throw exception in Header
     @Override
     public RealPerson createRealPerson(RealPersonDto realPersonDto) {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-//        List<Contact> contactList = new ArrayList<>();
-//        for (int i = 0; i < realPersonDto.getContactDtoList().size(); i++) {
-//            Contact contact = modelMapper.map(realPersonDto.getContactDtoList().get(i), Contact.class);
-//            contactList.add(contact);
-//        }
-//        realPerson.setContactList(contactList);
-
-//        RealPerson newUser = realUserRepository.save(realPerson);
-        return modelMapper.map(realPersonRepository.save(realPerson), RealPerson.class);
+        String password = generatePassword(realPerson);
+        realPerson.setPassword(password);
+        realPerson.setUserName(realPersonDto.getCellPhone());
+        RealPerson save = realPersonRepository.save(realPerson);
+        smsService.SendSMS(realPerson.getCellPhone(), "#CODE: " + password, false);
+        return save;
     }
-
 
     @Override
     public void deleteRealPerson(Long id) {
         realPersonRepository.deleteById(id);
     }
+
+    @Override
+    public RealPerson login(RealPerson realPerson) throws Exception {
+//        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
+//        if (userByPhoneNumber == null)
+//            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        RealPerson userByPhoneNumber = findByMobile(realPerson);
+        if (!userByPhoneNumber.getPassword().equals(realPerson.getPassword())) {
+            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
+        }
+        return userByPhoneNumber;
+    }
+
+    @Override
+    public RealPerson findByMobile(RealPerson realPerson) throws Exception {
+        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
+        if (userByPhoneNumber == null)
+            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        return userByPhoneNumber;
+    }
+
+    @Autowired
+    SmsService smsService;
+
+    @Override
+    public void resetPass(String userName) throws Exception {
+        RealPerson byUserName = realPersonRepository.findByUserName(userName);
+        newPassword = generatePassword(byUserName);
+        byUserName.setPassword(newPassword);
+        smsService.SendSMS(byUserName.getCellPhone(), "#CODE: " + newPassword, false);
+//        realPersonRepository.save(byUserName);
+    }
+
+    @Override
+    public void resetPassConfirm(String userName, String password) throws Exception {
+        RealPerson byUserName = realPersonRepository.findByUserName(userName);
+        if (Objects.equals(newPassword, password)) {
+            byUserName.setPassword(newPassword);
+            realPersonRepository.save(byUserName);
+        } else throw new Exception(enMessageSource.getMessage("failed_message", null, Locale.ENGLISH));
+    }
+
+
+    public String generatePassword(RealPerson realPerson) {
+        List<Character> characters = new ArrayList<>();
+        String lastFourCharacters = realPerson.getCellPhone().substring(realPerson.getCellPhone().length() - 4);
+        for (char c : lastFourCharacters.toCharArray()) {
+            characters.add(c);
+        }
+        StringBuilder output = new StringBuilder(lastFourCharacters.length());
+        while (characters.size() != 0) {
+            int randPicker = (int) (Math.random() * characters.size());
+            output.append(characters.remove(randPicker));
+        }
+        return output.toString();
+    }
+
 
 }

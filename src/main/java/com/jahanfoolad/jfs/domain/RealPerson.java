@@ -17,6 +17,8 @@ public class RealPerson extends AbstractEntity {
     @Column
     private String firstName;
     @Column
+    private String userName;
+    @Column
     private String lastName;
     @Column
     private String nationalNumber;
@@ -28,6 +30,8 @@ public class RealPerson extends AbstractEntity {
     private Boolean verified;
     @Column
     private Boolean activated;
+    @Column
+    private String password;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Contact> contactList;
 
