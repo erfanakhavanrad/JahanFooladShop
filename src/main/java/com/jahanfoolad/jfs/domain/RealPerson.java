@@ -19,8 +19,6 @@ public class RealPerson extends AbstractEntity {
     @Column
     private String firstName;
     @Column
-    private String userName;
-    @Column
     private String lastName;
     @Column
     private String nationalNumber;
