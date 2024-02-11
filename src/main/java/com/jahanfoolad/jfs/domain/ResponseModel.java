@@ -4,7 +4,9 @@ import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class ResponseModel <T>{
@@ -22,8 +24,10 @@ public class ResponseModel <T>{
         try {
             Class<?> localClass = local.getClass();
             Object merged = localClass.newInstance();
-
-            for (Field field : localClass.getDeclaredFields()) {
+            Field[] declaredFields = localClass.getDeclaredFields();
+            Field[] superClassFields = localClass.getSuperclass().getDeclaredFields();
+            Field[] allFields = Stream.concat(Arrays.stream(declaredFields) , Arrays.stream(superClassFields)).toArray(Field[]::new);
+            for (Field field : allFields) {
                 field.setAccessible(true);
                 Object localValue = field.get(local);
                 Object remoteValue = field.get(remote);
