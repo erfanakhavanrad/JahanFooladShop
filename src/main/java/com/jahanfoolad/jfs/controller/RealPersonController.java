@@ -5,14 +5,17 @@ import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RequestMapping("/realperson")
@@ -27,6 +30,12 @@ public class RealPersonController {
 
     @Autowired
     SmsService smsService;
+
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
+
 
     @GetMapping(path = "/test")
     public String testMethod() {
@@ -154,7 +163,8 @@ public class RealPersonController {
             responseModel.setContent(realPersonService.createRealPerson(realPersonDto));
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("user_already_exists",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

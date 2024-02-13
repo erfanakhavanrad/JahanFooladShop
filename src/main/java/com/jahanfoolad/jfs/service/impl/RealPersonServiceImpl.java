@@ -36,7 +36,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         return realPersonRepository.findAll();
     }
 
-    private String newPassword;
+//    private String newPassword;
 
     @Override
     public RealPerson getRealPersonById(Long id) throws Exception {
@@ -59,11 +59,10 @@ public class RealPersonServiceImpl implements RealPersonService {
     public RealPerson createRealPerson(RealPersonDto realPersonDto) {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        newPassword = generatePassword(realPerson);
-        realPerson.setPassword(newPassword);
+        realPerson.setPassword(generatePassword(realPerson));
         realPerson.setUserName(realPerson.getCellPhone());
         RealPerson save = realPersonRepository.save(realPerson);
-        smsService.SendSMS(realPersonDto.getCellPhone(), newPassword, false);
+        smsService.SendSMS(realPersonDto.getCellPhone(), realPerson.getPassword(), false);
         return save;
     }
 
@@ -123,17 +122,16 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Override
     public void resetPass(String userName) throws Exception {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
-        newPassword = generatePassword(byUserName);
-        byUserName.setPassword(newPassword);
-        smsService.SendSMS(byUserName.getCellPhone(), "#CODE: " + newPassword, false);
-//        realPersonRepository.save(byUserName);
+        byUserName.setConfirmationCode(generatePassword(byUserName));
+        smsService.SendSMS(byUserName.getCellPhone(), "Code: " + byUserName.getConfirmationCode(), false);
+        realPersonRepository.save(byUserName);
     }
 
     @Override
     public void resetPassConfirm(String userName, String password) throws Exception {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
-        if (Objects.equals(newPassword, password)) {
-            byUserName.setPassword(newPassword);
+        if (Objects.equals(byUserName.getConfirmationCode(), password)) {
+            byUserName.setPassword(byUserName.getConfirmationCode());
             realPersonRepository.save(byUserName);
         } else throw new Exception(enMessageSource.getMessage("failed_message", null, Locale.ENGLISH));
     }

@@ -32,6 +32,8 @@ public class RealPerson extends AbstractEntity {
     private Boolean activated;
     @Column
     private String password;
+    @Column
+    private String confirmationCode;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<Contact> contactList;
 
