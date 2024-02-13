@@ -55,7 +55,7 @@ public class ProductController {
     }
 
     @GetMapping("/getbyid")
-    public ResponseModel getProductByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getProductById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
 
@@ -112,7 +112,7 @@ public class ProductController {
     }
 
     @PostMapping("/update")
-    public ResponseModel updateCompany(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel updateProduct(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{
             log.info("update file");
