@@ -1,5 +1,7 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.domain.Category;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.Role;
 import com.jahanfoolad.jfs.domain.dto.RoleDto;
 import com.jahanfoolad.jfs.jpaRepository.RoleRepository;
@@ -24,14 +26,17 @@ public class RoleServiceImpl implements RoleService {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
+    @Autowired
+    ResponseModel responseModel;
+
     @Override
     public List<Role> getRoles() {
         return roleRepository.findAll();
     }
 
     @Override
-    public Role getRoleByUserId(Long id) throws Exception {
-        return roleRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message",null, Locale.ENGLISH)));
+    public Role getRoleById(Long id) throws Exception {
+        return roleRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
     }
 
     @Override
@@ -39,6 +44,23 @@ public class RoleServiceImpl implements RoleService {
         ModelMapper modelMapper = new ModelMapper();
         Role role = modelMapper.map(roleDto, Role.class);
         return modelMapper.map(roleRepository.save(role), Role.class);
+    }
+
+    @Override
+    public Role updateRole(RoleDto roleDto) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        Role oldRole = getRoleById(roleDto.getId());
+        Role newRole = modelMapper.map(roleDto, Role.class);
+
+        responseModel.clear();
+        Role updated = (Role) responseModel.merge(oldRole, newRole);
+
+        if (roleDto.getPrivilege() != null && !roleDto.getPrivilege().isEmpty()) {
+            updated.setPrivilege(newRole.getPrivilege());
+        }
+
+        return roleRepository.save(updated);
     }
 
     @Override

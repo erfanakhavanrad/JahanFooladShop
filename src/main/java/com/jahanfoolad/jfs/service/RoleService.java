@@ -8,9 +8,10 @@ import java.util.List;
 public interface RoleService {
     List<Role> getRoles();
 
-    Role getRoleByUserId(Long id) throws Exception;
+    Role getRoleById(Long id) throws Exception;
 
     Role createRole(RoleDto roleDto);
+    Role updateRole(RoleDto roleDto) throws Exception;
 
     void deleteRole(Long id);
 

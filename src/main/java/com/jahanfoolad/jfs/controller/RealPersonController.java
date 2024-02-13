@@ -125,7 +125,7 @@ public class RealPersonController {
             log.info("-------------");
 
             responseModel.clear();
-            responseModel.setContent(realPersonService.getRealPersonByUserId(id));
+            responseModel.setContent(realPersonService.getRealPersonById(id));
             responseModel.setResult(1);
 //            responseModel.set
 //        return userService.getUserByUserId(userid);
@@ -155,6 +155,24 @@ public class RealPersonController {
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseModel updateRealPerson(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            responseModel.clear();
+            responseModel.setContent(realPersonService.updateRealPerson(realPersonDto));
+            responseModel.setResult(1);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

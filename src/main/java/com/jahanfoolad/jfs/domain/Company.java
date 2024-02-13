@@ -30,6 +30,7 @@ public class Company extends AbstractEntity{
     private Boolean isActive;
     @OneToMany(cascade = {CascadeType.ALL} , fetch = FetchType.EAGER)
     private List<Contact> contactList;
+    // TODO: 2/12/2024
 //    @OneToMany(cascade = {CascadeType.ALL})
 //    private List<Role> roleList;
 

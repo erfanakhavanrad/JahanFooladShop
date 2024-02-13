@@ -26,6 +26,7 @@ public class Product extends AbstractEntity {
     private String baseOfQuantity;
     @OneToMany(cascade = {CascadeType.ALL})
     private List<File> fileList;
+    // TODO: 2/12/2024
 //    @OneToMany(cascade = {CascadeType.ALL})
 //    private List<Category> categoryList;
 //    @OneToMany(cascade = {CascadeType.ALL})

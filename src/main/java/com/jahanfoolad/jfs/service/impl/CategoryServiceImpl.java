@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.domain.Category;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.CategoryDto;
 import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.service.CategoryService;
@@ -26,6 +27,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
+    @Autowired
+    ResponseModel responseModel;
+
     @Override
     public List<Category> getCategories() {
         return categoryRepository.findAll();
@@ -41,6 +45,18 @@ public class CategoryServiceImpl implements CategoryService {
         ModelMapper modelMapper = new ModelMapper();
         Category category = modelMapper.map(categoryDto, Category.class);
         return modelMapper.map(categoryRepository.save(category), Category.class);
+    }
+
+    @Override
+    public Category updateCategory(CategoryDto categoryDto) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        Category oldCategory = getCategoryById(categoryDto.getId());
+        Category newCategory = modelMapper.map(categoryDto, Category.class);
+
+        responseModel.clear();
+        Category updated = (Category) responseModel.merge(oldCategory, newCategory);
+        return categoryRepository.save(updated);
     }
 
     @Override

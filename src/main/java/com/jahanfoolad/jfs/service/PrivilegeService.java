@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface PrivilegeService  {
     List<Privilege> getPrivileges();
-    Privilege getPrivilegeByUserId(Long id) throws Exception;
+    Privilege getPrivilegeById(Long id) throws Exception;
     Privilege createPrivilege(PrivilegeDto privilegeDto);
+    Privilege updatePrivilege(PrivilegeDto privilegeDto) throws Exception;
     void deletePrivilege(Long id);
 }

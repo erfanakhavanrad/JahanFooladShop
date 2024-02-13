@@ -1,6 +1,9 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.domain.Contact;
 import com.jahanfoolad.jfs.domain.CorpPerson;
+import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.CorpPersonRepository;
 import com.jahanfoolad.jfs.service.CorpPersonService;
@@ -8,8 +11,11 @@ import jakarta.annotation.Resource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,13 +30,16 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
+    @Autowired
+    ResponseModel responseModel;
+
     @Override
     public List<CorpPerson> getCorpPeople() {
         return corpPersonRepository.findAll();
     }
 
     @Override
-    public CorpPerson getCorpPersonByUserId(Long id) throws Exception {
+    public CorpPerson getCorpPersonById(Long id) throws Exception {
         return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
     }
 
@@ -39,6 +48,33 @@ public class CorpPersonServiceImpl implements CorpPersonService {
         ModelMapper modelMapper = new ModelMapper();
         CorpPerson corpPerson = modelMapper.map(corpPersonDto, CorpPerson.class);
         return modelMapper.map(corpPersonRepository.save(corpPerson), CorpPerson.class);
+    }
+
+    @Override
+    public CorpPerson updateCorpPerson(CorpPersonDto corpPersonDto) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        CorpPerson oldCorpPerson = getCorpPersonById(corpPersonDto.getId());
+        CorpPerson newCorpPerson = modelMapper.map(corpPersonDto, CorpPerson.class);
+
+        responseModel.clear();
+        CorpPerson updated = (CorpPerson) responseModel.merge(oldCorpPerson, newCorpPerson);
+
+        if (newCorpPerson.getContactList() != null && !newCorpPerson.getContactList().isEmpty()) {
+            updated.setContactList(newCorpPerson.getContactList());
+        }
+
+        return corpPersonRepository.save(updated);
+    }
+
+    @Override
+    public Page<CorpPerson> findByContact(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        ModelMapper modelMapper = new ModelMapper();
+        Contact contact = modelMapper.map(contactDto, Contact.class);
+        List<Contact> contactList = new ArrayList<>();
+        contact.setId(452L);
+        contactList.add(contact);
+        return corpPersonRepository.findAllByContactListIn(contactList, PageRequest.of(pageNo, perPage));
     }
 
     @Override

@@ -9,5 +9,6 @@ public interface CategoryService {
     List<Category> getCategories();
     Category getCategoryById(Long id) throws Exception;
     Category createCategory(CategoryDto categoryDto);
+    Category updateCategory(CategoryDto categoryDto) throws Exception;
     void deleteCategory(Long id);
 }

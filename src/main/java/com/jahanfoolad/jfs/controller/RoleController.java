@@ -47,7 +47,7 @@ public class RoleController {
     public ResponseModel getRoleById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
-            responseModel.setContent(roleService.getRoleByUserId(id));
+            responseModel.setContent(roleService.getRoleById(id));
             responseModel.setResult(1);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
@@ -79,6 +79,23 @@ public class RoleController {
         return responseModel;
     }
 
+    @PutMapping(path = "/update")
+    public ResponseModel updateRole(@RequestBody RoleDto roleDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            responseModel.clear();
+            responseModel.setContent(roleService.updateRole(roleDto));
+            responseModel.setResult(1);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(0);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseModel deleteRole(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {

@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class RealPerson extends AbstractEntity {
-
+    // TODO: 2/13/2024  
     //    private Role role;
     @Column(unique = true)
     private String userName;

@@ -46,7 +46,7 @@ public class PrivilegeController {
     public ResponseModel getPrivilegeById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
-            responseModel.setContent(privilegeService.getPrivilegeByUserId(id));
+            responseModel.setContent(privilegeService.getPrivilegeById(id));
             responseModel.setResult(1);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
@@ -79,6 +79,24 @@ public class PrivilegeController {
         return responseModel;
     }
 
+
+    @PutMapping(path = "/update")
+    public ResponseModel updatePrivilege(@RequestBody PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            responseModel.clear();
+            responseModel.setContent(privilegeService.updatePrivilege(privilegeDto));
+            responseModel.setResult(1);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(0);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseModel deletePrivilege(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
