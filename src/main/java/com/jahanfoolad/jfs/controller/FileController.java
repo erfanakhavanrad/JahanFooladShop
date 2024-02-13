@@ -112,7 +112,7 @@ public class FileController {
     }
 
     @PostMapping("/update")
-    public ResponseModel updateCompany(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel updateFile(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{
             log.info("update file");
