@@ -60,7 +60,7 @@ public class CategoryController {
         return responseModel;
     }
 
-    @PostMapping("/save")
+    @PostMapping(path = "/save")
     public ResponseModel createCategory(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
@@ -69,6 +69,24 @@ public class CategoryController {
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseModel updateCategory(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            responseModel.clear();
+            responseModel.setContent(categoryService.updateCategory(categoryDto));
+            responseModel.setResult(1);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

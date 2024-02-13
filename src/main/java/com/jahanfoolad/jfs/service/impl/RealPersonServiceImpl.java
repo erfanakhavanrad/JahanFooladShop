@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.domain.RealPerson;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.service.RealPersonService;
@@ -10,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +28,9 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
+    @Autowired
+    ResponseModel responseModel;
+
     @Override
     public List<RealPerson> getRealPersons() {
         return realPersonRepository.findAll();
@@ -34,7 +39,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     private String newPassword;
 
     @Override
-    public RealPerson getRealPersonByUserId(Long id) throws Exception {
+    public RealPerson getRealPersonById(Long id) throws Exception {
 //        realUserRepository.findById(id).get();
         return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
     }
@@ -62,6 +67,22 @@ public class RealPersonServiceImpl implements RealPersonService {
         return save;
     }
 
+    @Override
+    public RealPerson updateRealPerson(RealPersonDto realPersonDto) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        RealPerson oldRealPerson = getRealPersonById(realPersonDto.getId());
+        RealPerson newRealPerson = modelMapper.map(realPersonDto, RealPerson.class);
+
+        responseModel.clear();
+        RealPerson updated = (RealPerson) responseModel.merge(oldRealPerson, newRealPerson);
+
+        if (newRealPerson.getContactList() != null && !newRealPerson.getContactList().isEmpty()) {
+            updated.setContactList(newRealPerson.getContactList());
+        }
+
+        return realPersonRepository.save(updated);
+    }
 
     @Override
     public void deleteRealPerson(Long id) {

@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 public class CorpPerson extends AbstractEntity {
 
+    // TODO: 2/12/2024
     //    private Role role;
     @Column
     private String name;

@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.domain.Privilege;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.PrivilegeDto;
 import com.jahanfoolad.jfs.jpaRepository.PrivilegeRepository;
 import com.jahanfoolad.jfs.service.PrivilegeService;
@@ -24,14 +25,17 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
+    @Autowired
+    ResponseModel responseModel;
+
     @Override
     public List<Privilege> getPrivileges() {
         return privilegeRepository.findAll();
     }
 
     @Override
-    public Privilege getPrivilegeByUserId(Long id) throws Exception {
-        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message",null, Locale.ENGLISH)));
+    public Privilege getPrivilegeById(Long id) throws Exception {
+        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
     }
 
     @Override
@@ -39,6 +43,18 @@ public class PrivilegeServiceImpl implements PrivilegeService {
         ModelMapper modelMapper = new ModelMapper();
         Privilege privilege = modelMapper.map(privilegeDto, Privilege.class);
         return modelMapper.map(privilegeRepository.save(privilege), Privilege.class);
+    }
+
+    @Override
+    public Privilege updatePrivilege(PrivilegeDto privilegeDto) throws Exception {
+        ModelMapper modelMapper = new ModelMapper();
+
+        Privilege oldPrivilege = getPrivilegeById(privilegeDto.getId());
+        Privilege newPrivilege = modelMapper.map(privilegeDto, Privilege.class);
+
+        responseModel.clear();
+        Privilege updated = (Privilege) responseModel.merge(oldPrivilege, newPrivilege);
+        return privilegeRepository.save(updated);
     }
 
     @Override

@@ -2,12 +2,14 @@ package com.jahanfoolad.jfs.controller;
 
 import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import com.jahanfoolad.jfs.service.CorpPersonService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,9 +73,29 @@ public class CorpPersonController {
     public ResponseModel getCorpPersonById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
-            responseModel.setContent(corpPersonService.getCorpPersonByUserId(id));
+            responseModel.setContent(corpPersonService.getCorpPersonById(id));
             responseModel.setResult(1);
 
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
+
+    @GetMapping(path = "/findbycontact")
+    public ResponseModel findByContact(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        try {
+            responseModel.clear();
+            Page<CorpPerson> corpPeople = corpPersonService.findByContact(contactDto, pageNo, perPage);
+            responseModel.setContent(corpPeople);
+            responseModel.setResult(1);
+            responseModel.setRecordCount((int) corpPeople.getTotalElements());
+            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
@@ -95,6 +117,24 @@ public class CorpPersonController {
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(0);
+        }
+        return responseModel;
+    }
+
+    @PutMapping(path = "/update")
+    public ResponseModel updateCorpPerson(@RequestBody CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            responseModel.clear();
+            responseModel.setContent(corpPersonService.updateCorpPerson(corpPersonDto));
+            responseModel.setResult(1);
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
