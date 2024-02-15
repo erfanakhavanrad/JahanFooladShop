@@ -1,9 +1,12 @@
 package com.jahanfoolad.jfs.security;
 
+import com.jahanfoolad.jfs.domain.Person;
+import com.jahanfoolad.jfs.service.impl.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -18,13 +21,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@ComponentScan
+
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
 
-//    @Autowired
-//    UserService userDetailsService;
+    @Autowired
+    PersonService userDetailsService;
 
     @Autowired
     CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -39,12 +42,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-//        return http.getSharedObject(AuthenticationManagerBuilder.class)
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(passwordEncoder()).and().build();
-//    }
+    @Bean
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder()).and().build();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -61,7 +64,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.PATCH, "/product/update").permitAll()
                 .requestMatchers(HttpMethod.GET, "/category/*").permitAll()
 
-                .requestMatchers(HttpMethod.POST, "/user/add").permitAll()
+                .requestMatchers(HttpMethod.POST, "/realperson/save").permitAll()
+                .requestMatchers(HttpMethod.POST, "/realperson/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/forgetPass").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/support").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/login").permitAll()

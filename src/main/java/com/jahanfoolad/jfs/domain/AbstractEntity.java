@@ -21,17 +21,11 @@ abstract public class AbstractEntity {
     @CreatedDate
     private Date createDate = new Date();
 
+    @Column(name = "fk_user_modify")
+    Long lastModifiedBy;
 
-//    @Column(name = "fk_person")
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    private Users lastModifiedBy;
-
-//    private Integer lastModifiedBy;
-
-//    @Column(name = "fk_person")
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-//    private Users createdBy;
-//    private Integer lastModifiedBy;
+    @Column(name = "fk_user_created")
+    Long createdBy;
 
     @Column(name = "description")
     private String description;

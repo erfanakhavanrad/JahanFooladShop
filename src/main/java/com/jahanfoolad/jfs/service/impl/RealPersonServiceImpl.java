@@ -7,6 +7,7 @@ import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -25,11 +26,15 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
+
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
     @Autowired
     ResponseModel responseModel;
+
+    @Autowired
+    PersonService<RealPerson> personService;
 
     @Override
     public List<RealPerson> getRealPersons() {
@@ -56,14 +61,14 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     // Can throw exception in Header
     @Override
-    public RealPerson createRealPerson(RealPersonDto realPersonDto) {
+    public RealPerson createRealPerson(RealPersonDto realPersonDto , HttpServletRequest request) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
         realPerson.setPassword(generatePassword(realPerson));
         realPerson.setUserName(realPerson.getCellPhone());
-        RealPerson save = realPersonRepository.save(realPerson);
-        smsService.SendSMS(realPersonDto.getCellPhone(), realPerson.getPassword(), false);
-        return save;
+        return personService.save(realPerson);
+//        RealPerson save = realPersonRepository.save(realPerson);
+//        smsService.sendPasswordSms(realPersonDto.getCellPhone(), realPerson.getPassword());
     }
 
     @Override
@@ -97,15 +102,12 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public RealPerson login(RealPerson realPerson) throws Exception {
-//        RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
-//        if (userByPhoneNumber == null)
-//            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
-        RealPerson userByPhoneNumber = findByMobile(realPerson);
-        if (!userByPhoneNumber.getPassword().equals(realPerson.getPassword())) {
-            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
-        }
-        return userByPhoneNumber;
+    public ResponseModel login(RealPerson realPerson , HttpServletRequest request) throws Exception {
+//        RealPerson userByPhoneNumber = findByMobile(realPerson);
+//        if (!userByPhoneNumber.getPassword().equals(realPerson.getPassword())) {
+//            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
+//        }
+        return personService.login(realPerson , request);
     }
 
     @Override
@@ -123,7 +125,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     public void resetPass(String userName) throws Exception {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
         byUserName.setConfirmationCode(generatePassword(byUserName));
-        smsService.SendSMS(byUserName.getCellPhone(), "Code: " + byUserName.getConfirmationCode(), false);
+        smsService.sendPasswordSms(byUserName.getCellPhone(), "Code: " + byUserName.getConfirmationCode());
         realPersonRepository.save(byUserName);
     }
 

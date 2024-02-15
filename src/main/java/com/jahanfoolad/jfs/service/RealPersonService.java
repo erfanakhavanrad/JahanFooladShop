@@ -1,7 +1,9 @@
 package com.jahanfoolad.jfs.service;
 
 import com.jahanfoolad.jfs.domain.RealPerson;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ public interface RealPersonService {
 
     RealPerson getRealPersonByUsername(String userName) throws Exception;
 
-    RealPerson createRealPerson(RealPersonDto realPersonDto);
+    RealPerson createRealPerson(RealPersonDto realPersonDto  , HttpServletRequest request) throws Exception;
 
     RealPerson updateRealPerson(RealPersonDto realPersonDto) throws Exception;
 
@@ -24,7 +26,7 @@ public interface RealPersonService {
 
     void resetPassConfirm(String userName, String newPassword) throws Exception;
 
-    RealPerson login(RealPerson realPerson) throws Exception;
+    ResponseModel login(RealPerson realPerson , HttpServletRequest request) throws Exception;
 
     void resetPass(RealPerson byMobile, String newPassword) throws Exception;
 

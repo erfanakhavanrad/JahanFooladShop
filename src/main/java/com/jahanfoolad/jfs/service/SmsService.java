@@ -3,6 +3,6 @@ package com.jahanfoolad.jfs.service;
 import com.jahanfoolad.jfs.domain.SmsRestResponse;
 
 public interface SmsService {
-    SmsRestResponse SendSMS(String to, String text, Boolean isFlash);
+    SmsRestResponse sendPasswordSms(String to ,String password);
 
 }

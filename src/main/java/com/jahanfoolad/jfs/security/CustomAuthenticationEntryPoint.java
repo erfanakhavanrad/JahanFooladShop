@@ -1,8 +1,10 @@
 package com.jahanfoolad.jfs.security;
 
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -17,11 +19,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Component
 class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
 
     @Override
     @ExceptionHandler(value = {AuthorizationServiceException.class})
@@ -30,7 +35,7 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
         // 401
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        response.getOutputStream().println(getErrorModel(response.getStatus(), requirementsProperties.tokenNotValid(), authException.getMessage()));
+        response.getOutputStream().println(getErrorModel(response.getStatus(), faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH), authException.getMessage()));
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
@@ -39,7 +44,8 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
         // 403
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//        response.getOutputStream().println(getErrorModel(response.getStatus(), requirementsProperties.accessDenied(), accessDeniedException.getMessage()));
+        response.getOutputStream().println(getErrorModel(response.getStatus(),
+                faMessageSource.getMessage("ACCESS_DENIED" , null , Locale.ENGLISH), accessDeniedException.getMessage()));
     }
 
     @ExceptionHandler(value = {Exception.class})
@@ -47,7 +53,9 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
                          Exception exception) throws IOException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//        response.getOutputStream().println(getErrorModel(response.getStatus(), requirementsProperties.unknownError(), exception.getMessage()));
+        response.getOutputStream().println(getErrorModel(response.getStatus(),
+                faMessageSource.getMessage("UNKNOWN_TRANSACTION_ERROR" , null , Locale.ENGLISH),
+                exception.getMessage()));
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

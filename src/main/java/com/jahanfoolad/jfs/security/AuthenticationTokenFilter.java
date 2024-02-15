@@ -2,6 +2,7 @@ package com.jahanfoolad.jfs.security;
 
 import com.google.gson.Gson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.service.impl.PersonService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,8 +23,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
 
     public static String username;
 
-//    @Autowired
-//    UserService userService;
+    @Autowired
+    PersonService userService;
 
     @Autowired
     ResponseModel responseModel;
@@ -37,7 +38,7 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         try {
             username = null;
             username = dDoSControlService.tokenVerification(request);
-            if (username != null /*&& userService.findByUserName(username).getIsAuthorizationChanged()*/)
+            if (username != null && userService.findByUserName(username).getIsAuthorizationChanged())
                 throw new AuthorizationServiceException("USER AUTHORIZATION HAS CHANGED ");
             chain.doFilter(request, response);
 

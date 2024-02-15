@@ -57,7 +57,7 @@ public class RoleServiceImpl implements RoleService {
         Role updated = (Role) responseModel.merge(oldRole, newRole);
 
         if (roleDto.getPrivilege() != null && !roleDto.getPrivilege().isEmpty()) {
-            updated.setPrivilege(newRole.getPrivilege());
+            updated.setPrivileges(newRole.getPrivileges());
         }
 
         return roleRepository.save(updated);

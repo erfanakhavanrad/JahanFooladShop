@@ -33,9 +33,6 @@ public class RealPersonController {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
-
 
     @GetMapping(path = "/test")
     public String testMethod() {
@@ -82,16 +79,16 @@ public class RealPersonController {
         return responseModel;
     }
 
-    @GetMapping(path = "/login")
-    public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @PostMapping(path = "/login")
+    public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
-            RealPerson user = realPersonService.login(realPerson);
-            responseModel.setContent(user);
-            responseModel.setResult(1);
-            responseModel.setRecordCount(1);
-            responseModel.setStatus(httpServletResponse.getStatus());
+            return realPersonService.login(realPerson , request);
+//            responseModel.setContent(user);
+//            responseModel.setResult(1);
+//            responseModel.setRecordCount(1);
+//            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
@@ -160,7 +157,7 @@ public class RealPersonController {
 
         try {
             responseModel.clear();
-            responseModel.setContent(realPersonService.createRealPerson(realPersonDto));
+            responseModel.setContent(realPersonService.createRealPerson(realPersonDto , httpServletRequest));
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());

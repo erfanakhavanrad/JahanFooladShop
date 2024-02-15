@@ -62,7 +62,7 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public SmsRestResponse SendSMS(String to, String text, Boolean isFlash) {
+    public SmsRestResponse sendPasswordSms(String to , String password) {
         String operation = new Object() {
         }.getClass().getEnclosingMethod().getName();
         String url = String.format(endPoint, "SendSMS/"+operation);
@@ -71,8 +71,7 @@ public class SmsServiceImpl implements SmsService {
         map.put("password", this.password);
         map.put("to", to);
         map.put("from", from);
-        map.put("text", faMessageSource.getMessage("sms_welcome_message", null, Locale.ENGLISH) + "\n "+text);//#CODE: // لغو 11
-        map.put("isFlash", isFlash);
+        map.put("text", faMessageSource.getMessage("sms_welcome_message", null, Locale.ENGLISH) + "\n\n "+password);//#CODE: // لغو 11
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, getHttpHeaders());
 
