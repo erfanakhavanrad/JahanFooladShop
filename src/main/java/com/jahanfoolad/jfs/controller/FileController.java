@@ -40,16 +40,17 @@ public class FileController {
             log.info("get file");
             List<File> files = fileService.getFiles();
             responseModel.setContent(files);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(files.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -62,14 +63,15 @@ public class FileController {
         try {
             log.info("get file by user id");
             responseModel.setContent(fileService.getFileByUserId(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -81,14 +83,15 @@ public class FileController {
         try {
             log.info("create file");
             responseModel.setContent(fileService.createFile(fileDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -101,12 +104,12 @@ public class FileController {
         try {
             log.info("delete file");
             fileService.deleteFile(id);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -119,13 +122,13 @@ public class FileController {
             responseModel.setContent(fileService.updateFile(fileDto));
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }

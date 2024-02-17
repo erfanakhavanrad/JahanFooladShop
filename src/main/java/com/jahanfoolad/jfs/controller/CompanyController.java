@@ -52,6 +52,7 @@ public class CompanyController {
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
@@ -70,14 +71,15 @@ public class CompanyController {
         try {
             log.info("get company by user id");
             responseModel.setContent(companyService.getCompanyById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -89,14 +91,15 @@ public class CompanyController {
             log.info("create company");
             responseModel.clear();
             responseModel.setContent(companyService.createCompany(companyDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -109,12 +112,12 @@ public class CompanyController {
         try {
             log.info("delete company");
             companyService.deleteCompany(id);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -127,13 +130,13 @@ public class CompanyController {
             responseModel.setContent(companyService.updateCompany(companyDto));
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -145,16 +148,17 @@ public class CompanyController {
             log.info("find by category");
             List<Company> companies = companyService.findByCategory(categoryId);
             responseModel.setContent(companies);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -170,12 +174,13 @@ public class CompanyController {
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -187,16 +192,17 @@ public class CompanyController {
             log.info("find by city");
             Page<Company> companies = companyService.findByCity(contactDto,pageNo,perPage);
             responseModel.setContent(companies);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }

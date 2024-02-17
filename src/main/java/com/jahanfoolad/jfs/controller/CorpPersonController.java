@@ -8,6 +8,7 @@ import com.jahanfoolad.jfs.service.CorpPersonService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,11 @@ public class CorpPersonController {
     @Autowired
     ResponseModel responseModel;
 
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
 
     @GetMapping(path = "/login")
     public ResponseModel login(@RequestBody CorpPerson corpPerson, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -32,16 +38,17 @@ public class CorpPersonController {
         try {
             CorpPerson user = corpPersonService.login(corpPerson);
             responseModel.setContent(user);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(1);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -54,16 +61,17 @@ public class CorpPersonController {
         try {
             List<CorpPerson> corpPeople = corpPersonService.getCorpPeople();
             responseModel.setContents(corpPeople);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(corpPeople.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -74,15 +82,16 @@ public class CorpPersonController {
         try {
             responseModel.clear();
             responseModel.setContent(corpPersonService.getCorpPersonById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -93,16 +102,17 @@ public class CorpPersonController {
             responseModel.clear();
             Page<CorpPerson> corpPeople = corpPersonService.findByContact(contactDto, pageNo, perPage);
             responseModel.setContent(corpPeople);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount((int) corpPeople.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -114,14 +124,15 @@ public class CorpPersonController {
         try {
             responseModel.clear();
             responseModel.setContent(corpPersonService.createCorpPerson(corpPersonDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -131,15 +142,15 @@ public class CorpPersonController {
         try {
             responseModel.clear();
             responseModel.setContent(corpPersonService.updateCorpPerson(corpPersonDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -150,12 +161,12 @@ public class CorpPersonController {
         try {
             corpPersonService.deleteCorpPerson(id);
             responseModel.clear();
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }

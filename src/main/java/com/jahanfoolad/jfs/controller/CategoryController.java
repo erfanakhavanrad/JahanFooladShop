@@ -7,6 +7,7 @@ import com.jahanfoolad.jfs.service.CategoryService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,22 +22,29 @@ public class CategoryController {
     @Autowired
     ResponseModel responseModel;
 
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
+
     @GetMapping("/getall")
     public ResponseModel getCategories(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             List<Category> categories = categoryService.getCategories();
             responseModel.setContents(categories);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(categories.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -47,15 +55,16 @@ public class CategoryController {
         try {
             responseModel.clear();
             responseModel.setContent(categoryService.getCategoryById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -66,14 +75,15 @@ public class CategoryController {
         try {
             responseModel.clear();
             responseModel.setContent(categoryService.createCategory(categoryDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -83,15 +93,15 @@ public class CategoryController {
         try {
             responseModel.clear();
             responseModel.setContent(categoryService.updateCategory(categoryDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -102,12 +112,12 @@ public class CategoryController {
         try {
             categoryService.deleteCategory(id);
             responseModel.clear();
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }

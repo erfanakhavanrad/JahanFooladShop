@@ -40,16 +40,17 @@ public class ProductController {
             log.info("get product");
             List<Product> products = productService.getProducts();
             responseModel.setContent(products);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(products.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -62,14 +63,15 @@ public class ProductController {
         try {
             log.info("get product by user id");
             responseModel.setContent(productService.getProductById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -81,14 +83,15 @@ public class ProductController {
             log.info("create product");
             responseModel.clear();
             responseModel.setContent(productService.createProduct(productDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -101,12 +104,12 @@ public class ProductController {
         try {
             log.info("delete product");
             productService.deleteProduct(id);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -119,13 +122,13 @@ public class ProductController {
             responseModel.setContent(productService.updateProduct(productDto));
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -137,16 +140,17 @@ public class ProductController {
             log.info("find by file");
             Page<Product> products = productService.findByFile(fileDto,pageNo,perPage);
             responseModel.setContent(products);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount((int) products.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }

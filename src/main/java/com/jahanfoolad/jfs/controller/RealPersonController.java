@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,12 @@ public class RealPersonController {
     @Autowired
     SmsService smsService;
 
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -45,11 +52,12 @@ public class RealPersonController {
         try {
             responseModel.clear();
             realPersonService.resetPass(userName);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
 
         return responseModel;
@@ -63,16 +71,17 @@ public class RealPersonController {
             realPersonService.resetPassConfirm(userName, newPassword);
             RealPerson user = realPersonService.getRealPersonByUsername(userName);
             responseModel.setContent(user);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(1);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
 
 
@@ -90,12 +99,13 @@ public class RealPersonController {
 //            responseModel.setRecordCount(1);
 //            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -108,16 +118,17 @@ public class RealPersonController {
             log.info("GET ALL USERS");
             List<RealPerson> users = realPersonService.getRealPersons();
             responseModel.setContents(users);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(users.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -132,7 +143,7 @@ public class RealPersonController {
 
             responseModel.clear();
             responseModel.setContent(realPersonService.getRealPersonById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
 //            responseModel.set
 //        return userService.getUserByUserId(userid);
 //        } catch (AccessDeniedException accessDeniedException) {
@@ -142,12 +153,13 @@ public class RealPersonController {
 
 //            httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -158,7 +170,7 @@ public class RealPersonController {
         try {
             responseModel.clear();
             responseModel.setContent(realPersonService.createRealPerson(realPersonDto , httpServletRequest));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("USER_ALREADY_EXISTS",null, Locale.ENGLISH));
@@ -166,7 +178,7 @@ public class RealPersonController {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -176,15 +188,15 @@ public class RealPersonController {
         try {
             responseModel.clear();
             responseModel.setContent(realPersonService.updateRealPerson(realPersonDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -196,12 +208,12 @@ public class RealPersonController {
             log.info("DELETE USER");
             realPersonService.deleteRealPerson(id);
             responseModel.clear();
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
