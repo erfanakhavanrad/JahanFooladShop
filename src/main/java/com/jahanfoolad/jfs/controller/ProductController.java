@@ -52,12 +52,11 @@ public class ProductController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -74,12 +73,11 @@ public class ProductController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -95,12 +93,11 @@ public class ProductController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -118,7 +115,7 @@ public class ProductController {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -138,7 +135,7 @@ public class ProductController {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -150,18 +147,17 @@ public class ProductController {
             log.info("find by file");
             Page<Product> products = productService.findByFile(fileDto,pageNo,perPage);
             responseModel.setContent(products);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount((int) products.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }

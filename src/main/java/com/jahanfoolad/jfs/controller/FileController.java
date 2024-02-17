@@ -52,12 +52,11 @@ public class FileController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -74,12 +73,11 @@ public class FileController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -95,12 +93,11 @@ public class FileController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -118,7 +115,7 @@ public class FileController {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -133,12 +130,11 @@ public class FileController {
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }

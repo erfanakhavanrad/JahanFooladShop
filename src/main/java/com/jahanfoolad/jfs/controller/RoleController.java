@@ -8,6 +8,7 @@ import com.jahanfoolad.jfs.service.RoleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,11 @@ public class RoleController {
     @Autowired
     ResponseModel responseModel;
 
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
 
     @GetMapping("/getall")
     public ResponseModel getRoles(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
@@ -30,16 +36,17 @@ public class RoleController {
         try {
             List<Role> roles = roleService.getRoles();
             responseModel.setContents(roles);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(roles.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -49,15 +56,16 @@ public class RoleController {
         try {
             responseModel.clear();
             responseModel.setContent(roleService.getRoleById(id));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
 
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -68,14 +76,15 @@ public class RoleController {
         try {
             responseModel.clear();
             responseModel.setContent(roleService.createRole(roleDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -85,15 +94,15 @@ public class RoleController {
         try {
             responseModel.clear();
             responseModel.setContent(roleService.updateRole(roleDto));
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-            responseModel.setResult(0);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -104,12 +113,12 @@ public class RoleController {
         try {
             roleService.deleteRole(id);
             responseModel.clear();
-            responseModel.setResult(1);
+            responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }

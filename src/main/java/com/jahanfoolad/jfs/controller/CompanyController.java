@@ -32,11 +32,13 @@ public class CompanyController {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
+    @Resource(name = "enMessageSource")
+    private MessageSource enMessageSource;
 
     @Value("${SUCCESS_RESULT}")
     int success;
 
-    @Value("2")
+    @Value("${FAIL_RESULT}")
     int fail;
 
     @GetMapping("/getAll")
@@ -75,13 +77,11 @@ public class CompanyController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-            responseModel.setResult(fail);
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -97,12 +97,11 @@ public class CompanyController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
 
@@ -121,7 +120,7 @@ public class CompanyController {
             responseModel.setResult(fail);
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
@@ -136,12 +135,11 @@ public class CompanyController {
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -164,7 +162,7 @@ public class CompanyController {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -182,12 +180,11 @@ public class CompanyController {
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
@@ -205,12 +202,11 @@ public class CompanyController {
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return  responseModel;
     }
