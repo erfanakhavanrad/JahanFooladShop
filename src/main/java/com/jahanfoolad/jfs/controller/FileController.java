@@ -123,7 +123,7 @@ public class FileController {
         return responseModel;
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseModel updateFile(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{

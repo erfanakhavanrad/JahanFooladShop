@@ -161,7 +161,7 @@ public class RealPersonController {
             responseModel.setResult(1);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("user_already_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("USER_ALREADY_EXISTS",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {

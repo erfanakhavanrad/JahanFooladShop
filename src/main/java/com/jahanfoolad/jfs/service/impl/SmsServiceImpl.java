@@ -71,7 +71,7 @@ public class SmsServiceImpl implements SmsService {
         map.put("password", this.password);
         map.put("to", to);
         map.put("from", from);
-        map.put("text", faMessageSource.getMessage("sms_welcome_message", null, Locale.ENGLISH) + "\n\n "+password);//#CODE: // لغو 11
+        map.put("text", faMessageSource.getMessage("SMS_WELCOME_MESSAGE", null, Locale.ENGLISH) + "\n\n "+password);//#CODE: // لغو 11
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, getHttpHeaders());
 

@@ -21,7 +21,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Locale;
 
 @Configuration
-@SpringBootApplication
+//@SpringBootApplication
+@SpringBootApplication(exclude = org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class)
 @EnableScheduling
 @EnableAsync
 public class JfsApplication implements ApplicationContextAware, CommandLineRunner {

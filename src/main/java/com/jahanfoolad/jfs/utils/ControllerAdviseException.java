@@ -26,7 +26,7 @@ public class ControllerAdviseException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         String errorMessage = new ArrayList<>(exception.getConstraintViolations()).get(0).getMessage();
-        response.getOutputStream().println(getErrorModel(response.getStatus(), errorMessage, faMessageSource.getMessage("fieldValidation" , null , Locale.ENGLISH)));
+        response.getOutputStream().println(getErrorModel(response.getStatus(), errorMessage, faMessageSource.getMessage("FIELD_VALIDATION_ERROR" , null , Locale.ENGLISH)));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -37,7 +37,7 @@ public class ControllerAdviseException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         String errorMessage = new ArrayList<>(errors).get(0);
-        response.getOutputStream().println(getErrorModel(response.getStatus(), errorMessage,  faMessageSource.getMessage("fieldValidation" , null , Locale.ENGLISH)));
+        response.getOutputStream().println(getErrorModel(response.getStatus(), errorMessage,  faMessageSource.getMessage("FIELD_VALIDATION_ERROR" , null , Locale.ENGLISH)));
    }
 
 

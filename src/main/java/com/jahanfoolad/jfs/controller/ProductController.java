@@ -123,7 +123,7 @@ public class ProductController {
         return responseModel;
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseModel updateProduct(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{
