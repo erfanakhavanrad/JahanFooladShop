@@ -43,10 +43,10 @@ public class CompanyServiceImpl  implements CompanyService {
 
     @Override
     public Company getCompanyByUserId(Long id) throws Exception {
-        return companyRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        return companyRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
     }
     public Company getCompanyById(Long id) throws Exception {
-        return companyRepository.findById(id).orElseThrow ( () -> new Exception(enMessageSource.getMessage("failed_message",null,Locale.ENGLISH)));
+        return companyRepository.findById(id).orElseThrow ( () -> new Exception(faMessageSource.getMessage("NOT_FOUND",null,Locale.ENGLISH)));
     }
 
     @Override

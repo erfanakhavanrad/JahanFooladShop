@@ -21,7 +21,7 @@ public class Product extends AbstractEntity {
     @Column
     private String diameter;
     @Column
-    private String unit;
+    private String unit; 
     @Column
     private String baseOfQuantity;
     @OneToMany(cascade = {CascadeType.ALL})

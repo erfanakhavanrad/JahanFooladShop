@@ -10,21 +10,17 @@ import com.jahanfoolad.jfs.service.RoleService;
 import com.jahanfoolad.jfs.utils.LoginAttemptService;
 import com.jahanfoolad.jfs.utils.PasswordSendFactory;
 import jakarta.annotation.Resource;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.util.*;
@@ -98,7 +94,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
         P foundPerson = (P) personRepository.findByUserNameIgnoreCase(username);
         List<Privilege> privileges = new ArrayList<>();
         if (foundPerson == null)
-            throw new UsernameNotFoundException(faMessageSource.getMessage("user_already_not_exists", null, Locale.ENGLISH));
+            throw new UsernameNotFoundException(faMessageSource.getMessage("USER_NOT_EXISTS", null, Locale.ENGLISH));
         foundPerson.getRole().stream().forEach(role -> {
             role.getPrivileges().forEach(privilege -> {
                 privileges.add(privilege);

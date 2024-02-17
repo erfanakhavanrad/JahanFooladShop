@@ -55,7 +55,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
         if (byUserName != null) {
             return byUserName;
-        } else throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+        } else throw new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH));
     }
 
 
@@ -96,17 +96,13 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public void resetPass(RealPerson byMobile, String newPassword) throws Exception {
-        RealPerson realPerson = realPersonRepository.findById(byMobile.getId()).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        RealPerson realPerson = realPersonRepository.findById(byMobile.getId()).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
         realPerson.setPassword(newPassword);
 //        realPersonRepository.
     }
 
     @Override
     public ResponseModel login(RealPerson realPerson , HttpServletRequest request) throws Exception {
-//        RealPerson userByPhoneNumber = findByMobile(realPerson);
-//        if (!userByPhoneNumber.getPassword().equals(realPerson.getPassword())) {
-//            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
-//        }
         return personService.login(realPerson , request);
     }
 
@@ -114,7 +110,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     public RealPerson findByMobile(RealPerson realPerson) throws Exception {
         RealPerson userByPhoneNumber = realPersonRepository.findByCellPhone(realPerson.getCellPhone());
         if (userByPhoneNumber == null)
-            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+            throw new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH));
         return userByPhoneNumber;
     }
 
@@ -135,7 +131,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         if (Objects.equals(byUserName.getConfirmationCode(), password)) {
             byUserName.setPassword(byUserName.getConfirmationCode());
             realPersonRepository.save(byUserName);
-        } else throw new Exception(enMessageSource.getMessage("failed_message", null, Locale.ENGLISH));
+        } else throw new Exception(faMessageSource.getMessage("UNKNOWN_TRANSACTION_ERROR", null, Locale.ENGLISH));
     }
 
 
