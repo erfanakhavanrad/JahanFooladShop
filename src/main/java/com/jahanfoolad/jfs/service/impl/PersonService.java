@@ -29,7 +29,8 @@ import org.springframework.stereotype.Service;
 import javax.naming.AuthenticationException;
 import java.util.*;
 
-@Component
+//@Component
+@Service
 public class PersonService<P extends Person> implements UserDetailsService {
 
     @Autowired
