@@ -6,10 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+@Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
     Person findByUserNameIgnoreCase(String userName);
 
@@ -20,12 +21,12 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE public.person set is_active=:active where id =:uid", nativeQuery = true)
+    @Query(value = "UPDATE public.Person set is_active=:active where id =:uid", nativeQuery = true)
     int updateActivation(@Param("uid") long uid, @Param("active") boolean active);
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE public.person set is_authorization_changed=:auth where id in :uid", nativeQuery = true)
+    @Query(value = "UPDATE public.Person set is_authorization_changed=:auth where id in :uid", nativeQuery = true)
     int updateAuthorization(@Param("uid") List<Long> uid, @Param("auth") boolean auth);
 
     List<Person> findAllByRole(Role role);

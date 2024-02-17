@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @RequestMapping("/company")
@@ -48,12 +49,13 @@ public class CompanyController {
             log.info("get company pesrson");
             List<Company> companies = companyService.getCompanyPersons();
             responseModel.setContent(companies);
-            responseModel.setResult(1);
+            responseModel.setResult(success);
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
+            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -74,7 +76,7 @@ public class CompanyController {
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -94,7 +96,7 @@ public class CompanyController {
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -115,6 +117,7 @@ public class CompanyController {
             responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
@@ -131,7 +134,7 @@ public class CompanyController {
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
@@ -153,7 +156,8 @@ public class CompanyController {
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
+            responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
@@ -175,7 +179,7 @@ public class CompanyController {
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
@@ -197,7 +201,7 @@ public class CompanyController {
             responseModel.setStatus(httpServletResponse.getStatus());
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
