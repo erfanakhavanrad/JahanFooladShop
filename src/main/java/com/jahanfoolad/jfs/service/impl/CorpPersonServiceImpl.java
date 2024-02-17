@@ -40,7 +40,7 @@ public class CorpPersonServiceImpl implements CorpPersonService {
 
     @Override
     public CorpPerson getCorpPersonById(Long id) throws Exception {
-        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
@@ -86,9 +86,9 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     public CorpPerson login(CorpPerson corpPerson) throws Exception {
         CorpPerson userByPhoneNumber = corpPersonRepository.findByCellPhone(corpPerson.getCellPhone());
         if (userByPhoneNumber == null)
-            throw new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH));
+            throw new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH));
         if (!userByPhoneNumber.getPassword().equals(corpPerson.getPassword())) {
-            throw new Exception(enMessageSource.getMessage("incorrect_password", null, Locale.ENGLISH));
+            throw new Exception(faMessageSource.getMessage("INCORRECT_PASSWORD", null, Locale.ENGLISH));
         }
         return userByPhoneNumber;
     }

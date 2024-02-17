@@ -38,7 +38,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File getFileByUserId(Long id) throws Exception {
-        return fileRepository.findById(id).orElseThrow ( () -> new Exception(enMessageSource.getMessage("failed_message",null, Locale.ENGLISH)));
+        return fileRepository.findById(id).orElseThrow ( () -> new Exception(faMessageSource.getMessage("NOT_FOUND",null, Locale.ENGLISH)));
     }
 
     @Override

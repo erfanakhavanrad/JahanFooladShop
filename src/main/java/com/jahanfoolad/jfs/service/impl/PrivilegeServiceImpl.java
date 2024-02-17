@@ -35,7 +35,7 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public Privilege getPrivilegeById(Long id) throws Exception {
-        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(enMessageSource.getMessage("item_not_found_message", null, Locale.ENGLISH)));
+        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override

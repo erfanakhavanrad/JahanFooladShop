@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) throws Exception {
-        return productRepository.findById(id).orElseThrow ( () -> new Exception(enMessageSource.getMessage("failed_message",null, Locale.ENGLISH)));
+        return productRepository.findById(id).orElseThrow ( () -> new Exception(faMessageSource.getMessage("NOT_FOUND",null, Locale.ENGLISH)));
     }
 
     @Override

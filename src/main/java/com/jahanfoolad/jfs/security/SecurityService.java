@@ -184,14 +184,14 @@ public class SecurityService {
             } catch (TokenExpiredException ex) {
                 ex.printStackTrace();
                 responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOTVALID" , null , Locale.ENGLISH));
+                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
                 responseModel.setSystemError(ex.toString());
                 responseModel.setContent(null);
 
             } catch (Exception exc) {
                 exc.printStackTrace();
                 responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOTVALID" , null , Locale.ENGLISH));
+                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
                 responseModel.setSystemError(exc.toString());
                 responseModel.setContent(null);
 
@@ -221,7 +221,7 @@ public class SecurityService {
             } catch (TokenExpiredException ex) {
                 ex.printStackTrace();
                 responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOTVALID" , null , Locale.ENGLISH));
+                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
                 responseModel.setSystemError(ex.toString());
                 responseModel.setContent(null);
 
