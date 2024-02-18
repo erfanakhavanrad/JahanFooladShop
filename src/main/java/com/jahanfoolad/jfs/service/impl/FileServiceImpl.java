@@ -27,8 +27,6 @@ public class FileServiceImpl implements FileService {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
 
 
     @Override

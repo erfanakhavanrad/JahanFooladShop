@@ -51,7 +51,7 @@ public class ProductController {
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("ALREADY_NOT_EXISTS",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -72,7 +72,7 @@ public class ProductController {
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("ALREADY_NOT_EXISTS",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -92,7 +92,7 @@ public class ProductController {
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -129,7 +129,7 @@ public class ProductController {
             responseModel.setResult(success);
         }catch (DataIntegrityViolationException dataIntegrityViolationException){
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
             responseModel.setResult(fail);
         }catch (Exception e){
             responseModel.setError(e.getMessage());

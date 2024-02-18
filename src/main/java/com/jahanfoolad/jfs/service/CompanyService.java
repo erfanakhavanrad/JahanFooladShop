@@ -11,11 +11,11 @@ public interface CompanyService {
     List<Company> getCompanyPersons() throws Exception;
     Company getCompanyById(Long id) throws Exception;
     Company getCompanyByUserId(Long id) throws Exception;
-    Company createCompany(CompanyDto companyDto);
+    Company createCompany(CompanyDto companyDto) throws Exception;
     void deleteCompany(Long id);
     Company updateCompany(CompanyDto companyDto) throws Exception;
-    List<Company> findByCategory(Long categoryId);
-    Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage);
+    List<Company> findByCategory(Long categoryId) throws Exception;
+    Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) throws Exception;
     Page<Company> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage);
 
 }

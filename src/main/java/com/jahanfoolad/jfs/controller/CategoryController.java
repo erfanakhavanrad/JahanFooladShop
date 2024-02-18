@@ -28,8 +28,8 @@ public class CategoryController {
     @Value("${FAIL_RESULT}")
     int fail;
 
-    @GetMapping("/getall")
-    public ResponseModel getCategories(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @GetMapping("/getAll")
+    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             List<Category> categories = categoryService.getCategories();
@@ -50,8 +50,8 @@ public class CategoryController {
     }
 
 
-    @GetMapping(path = "/getbyid")
-    public ResponseModel getCategoryById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @GetMapping(path = "/getById")
+    public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
             responseModel.setContent(categoryService.getCategoryById(id));
@@ -70,7 +70,7 @@ public class CategoryController {
     }
 
     @PostMapping(path = "/save")
-    public ResponseModel createCategory(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel save(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             responseModel.clear();
@@ -89,7 +89,7 @@ public class CategoryController {
     }
 
     @PutMapping(path = "/update")
-    public ResponseModel updateCategory(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel update(@RequestBody CategoryDto categoryDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
             responseModel.setContent(categoryService.updateCategory(categoryDto));
@@ -107,7 +107,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteCategory(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             categoryService.deleteCategory(id);

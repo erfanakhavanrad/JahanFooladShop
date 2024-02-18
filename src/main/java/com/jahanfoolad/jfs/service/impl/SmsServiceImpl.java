@@ -38,9 +38,6 @@ public class SmsServiceImpl implements SmsService {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
-
 
     private static final String SMS_WELCOME_MESSAGE_NEW_PASSWORD = "به آهن\u200Cسی خوش آمدید. رمز عبور شما ";
     private static final String SEND_SMS = "SendSMS/SendSMS";

@@ -31,8 +31,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
 
     @Override
     public List<Product> getProducts() {

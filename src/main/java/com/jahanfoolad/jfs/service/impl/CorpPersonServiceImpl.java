@@ -28,8 +28,6 @@ public class CorpPersonServiceImpl implements CorpPersonService {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
 
     @Autowired
     ResponseModel responseModel;

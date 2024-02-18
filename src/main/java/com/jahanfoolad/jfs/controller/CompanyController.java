@@ -42,46 +42,45 @@ public class CompanyController {
 
     @GetMapping("/getAll")
     public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        responseModel.clear();
         try {
-            log.info("get company pesrson");
+            responseModel.clear();
+            log.info("get all company");
             List<Company> companies = companyService.getCompanyPersons();
             responseModel.setContent(companies);
-            responseModel.setResult(success);
             responseModel.setRecordCount(companies.size());
+            responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists", null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException){
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
         return responseModel;
     }
 
     @GetMapping("/getById")
-    public ResponseModel getCompanyByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        responseModel.clear();
-
+    public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
-            log.info("get company by user id");
+            log.info("get company by id");
+            responseModel.clear();
             responseModel.setContent(companyService.getCompanyById(id));
+            responseModel.setRecordCount(1);
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setError(e.getMessage());
         }
         return responseModel;
     }
@@ -94,113 +93,123 @@ public class CompanyController {
             responseModel.clear();
             responseModel.setContent(companyService.createCompany(companyDto));
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS", null, Locale.ENGLISH));
             responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
+            responseModel.setResult(fail);
+            responseModel.setError(e.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
         return responseModel;
 
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteCompany(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
-
+    public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             log.info("delete company");
+            responseModel.clear();
             companyService.deleteCompany(id);
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
             responseModel.setResult(fail);
-        } finally {
+            responseModel.setStatus(httpServletResponse.getStatus());
+        }
+        return responseModel;
+    }
+
+    @PutMapping("/update")
+    public ResponseModel update(@RequestBody CompanyDto companyDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            log.info("update company");
+            responseModel.setContent(companyService.updateCompany(companyDto));
+            responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
         return responseModel;
     }
 
-    @PutMapping("/update")
-    public ResponseModel updateCompany(@RequestBody CompanyDto companyDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
-
-        try{
-            log.info("update company");
-            responseModel.setContent(companyService.updateCompany(companyDto));
-            responseModel.setResult(success);
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(fail);
-        }
-        return  responseModel;
-    }
-
     @GetMapping("/findByCategory")
-    public ResponseModel findByCategory(@RequestParam Long categoryId , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
-        responseModel.clear();
-        try{
+    public ResponseModel findByCategory(@RequestParam Long categoryId, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        try {
+            responseModel.clear();
             log.info("find by category");
             List<Company> companies = companyService.findByCategory(categoryId);
             responseModel.setContent(companies);
             responseModel.setResult(success);
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
-         }catch (Exception e){
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
-        return  responseModel;
+        return responseModel;
     }
 
     @GetMapping("/findByProvince")
-    public ResponseModel findByProvince(ContactDto contactDto ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
-        responseModel.clear();
-        try{
-            Page<Company> companies = companyService.findByProvince(contactDto,pageNo,perPage);
+    public ResponseModel findByProvince(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        try {
+            responseModel.clear();
+            Page<Company> companies = companyService.findByProvince(contactDto, pageNo, perPage);
             responseModel.setContent(companies);
             responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
-        return  responseModel;
+        return responseModel;
     }
 
     @GetMapping("/findByCity")
-    public ResponseModel findByCity(ContactDto contactDto ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
+    public ResponseModel findByCity(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         responseModel.clear();
-        try{
+        try {
             log.info("find by city");
-            Page<Company> companies = companyService.findByCity(contactDto,pageNo,perPage);
+            Page<Company> companies = companyService.findByCity(contactDto, pageNo, perPage);
             responseModel.setContent(companies);
             responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setError(faMessageSource.getMessage("ALREADY_NOT_EXISTS", null, Locale.ENGLISH));
             responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
-        return  responseModel;
+        return responseModel;
     }
 
 }
