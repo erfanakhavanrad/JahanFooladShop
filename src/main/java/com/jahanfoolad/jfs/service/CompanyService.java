@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface CompanyService {
-    List<Company> getCompanyPersons();
+    List<Company> getCompanyPersons() throws Exception;
     Company getCompanyById(Long id) throws Exception;
     Company getCompanyByUserId(Long id) throws Exception;
     Company createCompany(CompanyDto companyDto);

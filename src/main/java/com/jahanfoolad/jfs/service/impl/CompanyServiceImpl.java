@@ -1,11 +1,13 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Company;
 import com.jahanfoolad.jfs.domain.Contact;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.CompanyDto;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.jpaRepository.CompanyRepository;
+import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
 import com.jahanfoolad.jfs.service.CompanyService;
 import jakarta.annotation.Resource;
 import jakarta.annotation.Resource;
@@ -86,14 +88,13 @@ public class CompanyServiceImpl  implements CompanyService {
     }
 
 
+    @Autowired
+    ContactRepository contactRepository;
+
     @Override
     public Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
-        ModelMapper modelMapper = new ModelMapper();
-        Contact contact = modelMapper.map(contactDto, Contact.class);
-        contact.setId(702l);
-        List<Contact> contactList = new ArrayList<>();
-        contactList.add(contact);
-        return companyRepository.findAllByContactListIn(contactList , PageRequest.of(pageNo,perPage));
+        List<Contact> contacts =  contactRepository.findAllByProvince(contactDto.getProvince());
+        return companyRepository.findAllByContactListIn(contacts , JfsApplication.createPagination(pageNo , perPage));
     }
 
     @Override

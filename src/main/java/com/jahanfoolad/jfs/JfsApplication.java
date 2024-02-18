@@ -66,10 +66,12 @@ public class JfsApplication implements ApplicationContextAware, CommandLineRunne
 
 
     public static Pageable createPagination(Integer pageNumber, Integer perPage) {
-        if (pageNumber == null) return PageRequest.of(0, MAX_PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createDate"));
+        if (pageNumber == null)
+            return PageRequest.of(0, MAX_PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createDate"));
         else if (perPage == null)
             return PageRequest.of(--pageNumber, PER_PAGE, Sort.by(Sort.Direction.DESC, "createDate"));
-        else return PageRequest.of(--pageNumber, perPage, Sort.by(Sort.Direction.DESC, "createDate"));
+        else
+            return PageRequest.of(--pageNumber, perPage, Sort.by(Sort.Direction.DESC, "createDate"));
     }
 
     public static String getClientIP(HttpServletRequest request) {

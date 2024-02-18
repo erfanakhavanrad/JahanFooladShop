@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Contact;
 import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
@@ -74,7 +75,7 @@ public class CorpPersonServiceImpl implements CorpPersonService {
         List<Contact> contactList = new ArrayList<>();
         contact.setId(452L);
         contactList.add(contact);
-        return corpPersonRepository.findAllByContactListIn(contactList, PageRequest.of(pageNo, perPage));
+        return corpPersonRepository.findAllByContactListIn(contactList,JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override

@@ -39,7 +39,7 @@ public class ProductController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getProducts(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
@@ -120,7 +120,7 @@ public class ProductController {
         return responseModel;
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseModel updateProduct(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{
@@ -131,28 +131,6 @@ public class ProductController {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
             responseModel.setResult(fail);
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(fail);
-        }
-        return  responseModel;
-    }
-
-    @GetMapping("/findByFile")
-    public ResponseModel findByFile(FileDto fileDto , @RequestParam Integer pageNo , Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
-        responseModel.clear();
-        try{
-            log.info("find by file");
-            Page<Product> products = productService.findByFile(fileDto,pageNo,perPage);
-            responseModel.setContent(products);
-            responseModel.setResult(success);
-            responseModel.setRecordCount((int) products.getTotalElements());
-            responseModel.setStatus(httpServletResponse.getStatus());
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {

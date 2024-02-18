@@ -16,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,8 +33,6 @@ public class CompanyController {
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
-    @Resource(name = "enMessageSource")
-    private MessageSource enMessageSource;
 
     @Value("${SUCCESS_RESULT}")
     int success;
@@ -42,7 +41,7 @@ public class CompanyController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getCompanyPersons(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
         try {
@@ -54,18 +53,22 @@ public class CompanyController {
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
+            responseModel.setError(faMessageSource.getMessage("already_not_exists", null, Locale.ENGLISH));
+        }catch (AccessDeniedException accessDeniedException){
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(0);
+            responseModel.setResult(fail);
         }
         return responseModel;
     }
 
-    @GetMapping("/getbyid")
+    @GetMapping("/getById")
     public ResponseModel getCompanyByUserId(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         responseModel.clear();
@@ -74,9 +77,6 @@ public class CompanyController {
             log.info("get company by user id");
             responseModel.setContent(companyService.getCompanyById(id));
             responseModel.setResult(success);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
         } finally {
@@ -87,7 +87,7 @@ public class CompanyController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createCompany(@RequestBody CompanyDto companyDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel save(@RequestBody CompanyDto companyDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             log.info("create company");
@@ -132,9 +132,6 @@ public class CompanyController {
             log.info("update company");
             responseModel.setContent(companyService.updateCompany(companyDto));
             responseModel.setResult(success);
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_exists",null, Locale.ENGLISH));
         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
@@ -154,11 +151,7 @@ public class CompanyController {
             responseModel.setResult(success);
             responseModel.setRecordCount(companies.size());
             responseModel.setStatus(httpServletResponse.getStatus());
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("already_not_exists",null, Locale.ENGLISH));
-            responseModel.setResult(fail);
-        }catch (Exception e){
+         }catch (Exception e){
             responseModel.setError(e.getMessage());
         } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -171,7 +164,6 @@ public class CompanyController {
     public ResponseModel findByProvince(ContactDto contactDto ,@RequestParam Integer pageNo ,Integer perPage , HttpServletResponse httpServletResponse , HttpServletRequest httpServletRequest){
         responseModel.clear();
         try{
-            log.info("find by province");
             Page<Company> companies = companyService.findByProvince(contactDto,pageNo,perPage);
             responseModel.setContent(companies);
             responseModel.setResult(success);

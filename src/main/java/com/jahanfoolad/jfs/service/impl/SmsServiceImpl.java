@@ -36,17 +36,15 @@ public class SmsServiceImpl implements SmsService {
     @Value("${sms.privateLine}")
     private String from;
 
-    private static final String SMS_WELCOME_MESSAGE_NEW_PASSWORD = "به آهن\u200Cسی خوش آمدید. رمز عبور شما ";
-    private static final String SMS_WELCOME_MESSAGE_RESET_PASSWORD = "به آهن\u200Cسی خوش آمدید. رمز عبور جدید شما ";
-
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
     @Resource(name = "enMessageSource")
     private MessageSource enMessageSource;
 
-    private final String endPoint = "https://rest.payamak-panel.com/api/%s";
 
-    //    private final String SMS_TEXT;
+    private static final String SMS_WELCOME_MESSAGE_NEW_PASSWORD = "به آهن\u200Cسی خوش آمدید. رمز عبور شما ";
+    private static final String SEND_SMS = "SendSMS/SendSMS";
+    private final String baseUrl = "https://rest.payamak-panel.com/api/%s";
 
     public SmsServiceImpl(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
@@ -65,13 +63,13 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public SmsRestResponse sendPasswordSms(String to, String password) {
-        String operation = new Object() {
-        }.getClass().getEnclosingMethod().getName();
-        String url = String.format(endPoint, "SendSMS/" + operation);
+
+        String url = String.format(baseUrl, SEND_SMS);
         Map<String, Object> map = new HashMap<>();
         map.put("username", this.userName);
         map.put("password", this.password);
         map.put("to", to);
+        map.put("isFlash", false);
         map.put("from", from);
         map.put("text", SMS_WELCOME_MESSAGE_NEW_PASSWORD + "\n\n " + password);//#CODE: // لغو 11
 
