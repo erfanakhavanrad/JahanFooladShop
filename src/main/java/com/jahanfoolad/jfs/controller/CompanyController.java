@@ -125,7 +125,7 @@ public class CompanyController {
         return responseModel;
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseModel updateCompany(@RequestBody CompanyDto companyDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
 
         try{

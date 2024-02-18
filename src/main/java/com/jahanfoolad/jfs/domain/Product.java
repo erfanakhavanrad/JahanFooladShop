@@ -17,18 +17,15 @@ public class Product extends AbstractEntity {
     @Column
     private String code;
     @Column
-    private String length;
+    private String brand;
     @Column
-    private String diameter;
-    @Column
-    private String unit; 
-    @Column
-    private String baseOfQuantity;
+    private String company;
+
     @OneToMany(cascade = {CascadeType.ALL})
     private List<File> fileList;
-    // TODO: 2/12/2024
-//    @OneToMany(cascade = {CascadeType.ALL})
-//    private List<Category> categoryList;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Category> categoryList;
 //    @OneToMany(cascade = {CascadeType.ALL})
 //    private List<Price> priceList;
 //    @OneToMany(cascade = {CascadeType.ALL})
