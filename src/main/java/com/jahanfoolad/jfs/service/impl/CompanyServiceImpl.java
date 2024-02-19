@@ -1,16 +1,20 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.Company;
 import com.jahanfoolad.jfs.domain.Contact;
 import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.dto.CategoryDto;
 import com.jahanfoolad.jfs.domain.dto.CompanyDto;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
+import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.jpaRepository.CompanyRepository;
 import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
 import com.jahanfoolad.jfs.service.CompanyService;
 import jakarta.annotation.Resource;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,13 @@ public class CompanyServiceImpl  implements CompanyService {
 
     @Autowired
     CompanyRepository  companyRepository;
+
+    @Autowired
+    ContactRepository contactRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -37,8 +48,8 @@ public class CompanyServiceImpl  implements CompanyService {
     ResponseModel responseModel;
 
     @Override
-    public List<Company> getCompanyPersons() {
-        return companyRepository.findAll();
+    public Page<Company> getCompany(Integer pageNo, Integer perPage) {
+        return companyRepository.findAll(JfsApplication.createPagination(pageNo , perPage));
     }
 
     @Override
@@ -50,9 +61,8 @@ public class CompanyServiceImpl  implements CompanyService {
     }
 
     @Override
-    public Company createCompany(CompanyDto companyDto) {
+    public Company createCompany(CompanyDto companyDto, HttpServletRequest httpServletRequest) {
         ModelMapper  modelMapper = new ModelMapper();
-//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         Company company = modelMapper.map(companyDto,Company.class);
         return modelMapper.map(companyRepository.save(company) , Company.class);
     }
@@ -63,7 +73,7 @@ public class CompanyServiceImpl  implements CompanyService {
     }
 
     @Override
-    public Company updateCompany(CompanyDto companyDto) throws Exception {
+    public Company updateCompany(CompanyDto companyDto, HttpServletRequest httpServletRequest) throws Exception {
         log.info("update company");
         responseModel.clear();
 
@@ -79,15 +89,12 @@ public class CompanyServiceImpl  implements CompanyService {
         return companyRepository.save(updated);
     }
 
-    @Override
-    public List<Company> findByCategory(Long categoryId) {
-//        return companyRepository.findByCategoryId(categoryId);
-        return null;
-    }
-
-
-    @Autowired
-    ContactRepository contactRepository;
+//    @Override
+//    public Page<Company> findByCategory(CategoryDto categoryDto, Integer pageNo, Integer perPage) {
+//        List<Category> category =  categoryRepository.findAllByCategory(categoryDto.getId());
+//        return companyRepository.findAllByContactListIn(category , JfsApplication.createPagination(pageNo , perPage));
+//
+//    }
 
     @Override
     public Page<Company> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
@@ -97,12 +104,8 @@ public class CompanyServiceImpl  implements CompanyService {
 
     @Override
     public Page<Company> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage) {
-        ModelMapper modelMapper = new ModelMapper();
-        Contact contact = modelMapper.map(contactDto, Contact.class);
-        contact.setId(702l);
-        List<Contact> contactDtoList = new ArrayList<>();
-        contactDtoList.add(contact);
-        return companyRepository.findAllByContactListIn(contactDtoList , PageRequest.of(pageNo,perPage));
+        List<Contact> contacts = contactRepository.findAllByCity(contactDto.getCity());
+        return companyRepository.findAllByContactListIn(contacts ,JfsApplication.createPagination(pageNo , perPage));
     }
 
 }

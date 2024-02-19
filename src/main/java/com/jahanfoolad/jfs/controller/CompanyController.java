@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -41,13 +40,13 @@ public class CompanyController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
             log.info("get all company");
-            List<Company> companies = companyService.getCompanyPersons();
+            Page<Company> companies = companyService.getCompany(pageNo,perPage);
             responseModel.setContent(companies);
-            responseModel.setRecordCount(companies.size());
+            responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
@@ -91,7 +90,7 @@ public class CompanyController {
         try {
             log.info("create company");
             responseModel.clear();
-            responseModel.setContent(companyService.createCompany(companyDto));
+            responseModel.setContent(companyService.createCompany(companyDto,httpServletRequest));
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
@@ -133,28 +132,10 @@ public class CompanyController {
     public ResponseModel update(@RequestBody CompanyDto companyDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             log.info("update company");
-            responseModel.setContent(companyService.updateCompany(companyDto));
+            responseModel.setContent(companyService.updateCompany(companyDto,httpServletRequest));
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-            responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(fail);
-        }
-        return responseModel;
-    }
-
-    @GetMapping("/findByCategory")
-    public ResponseModel findByCategory(@RequestParam Long categoryId, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
-        try {
-            responseModel.clear();
-            log.info("find by category");
-            List<Company> companies = companyService.findByCategory(categoryId);
-            responseModel.setContent(companies);
-            responseModel.setResult(success);
-            responseModel.setRecordCount(companies.size());
-            responseModel.setStatus(httpServletResponse.getStatus());
-        } catch (AccessDeniedException accessDeniedException) {
+        }catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
@@ -166,6 +147,29 @@ public class CompanyController {
         }
         return responseModel;
     }
+
+//    @GetMapping("/findByCategory")
+//    public ResponseModel findByCategory(CategoryDto categoryDto, @RequestParam Long categoryId, Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+//        try {
+//            responseModel.clear();
+//            log.info("find by category");
+//            Page<Category> category= companyService.findByCategory(categoryDto,pageNo,perPage);
+//            responseModel.setContent(category);
+//            responseModel.setResult(success);
+//            responseModel.setRecordCount(category.size());
+//            responseModel.setStatus(httpServletResponse.getStatus());
+//        } catch (AccessDeniedException accessDeniedException) {
+//            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+//            responseModel.setResult(fail);
+//            responseModel.setSystemError(accessDeniedException.getMessage());
+//            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//        } catch (Exception e) {
+//            responseModel.setError(e.getMessage());
+//            responseModel.setStatus(httpServletResponse.getStatus());
+//            responseModel.setResult(fail);
+//        }
+//        return responseModel;
+//    }
 
     @GetMapping("/findByProvince")
     public ResponseModel findByProvince(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
