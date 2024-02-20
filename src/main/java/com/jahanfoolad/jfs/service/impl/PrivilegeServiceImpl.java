@@ -6,6 +6,7 @@ import com.jahanfoolad.jfs.domain.dto.PrivilegeDto;
 import com.jahanfoolad.jfs.jpaRepository.PrivilegeRepository;
 import com.jahanfoolad.jfs.service.PrivilegeService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -37,14 +38,14 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     }
 
     @Override
-    public Privilege createPrivilege(PrivilegeDto privilegeDto) {
+    public Privilege createPrivilege(PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Privilege privilege = modelMapper.map(privilegeDto, Privilege.class);
         return modelMapper.map(privilegeRepository.save(privilege), Privilege.class);
     }
 
     @Override
-    public Privilege updatePrivilege(PrivilegeDto privilegeDto) throws Exception {
+    public Privilege updatePrivilege(PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
 
         Privilege oldPrivilege = getPrivilegeById(privilegeDto.getId());

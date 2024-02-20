@@ -1,16 +1,18 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.CategoryDto;
 import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.service.CategoryService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 import java.util.List;
 import java.util.Locale;
@@ -38,14 +40,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category createCategory(CategoryDto categoryDto) {
+    public Category createCategory(CategoryDto categoryDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Category category = modelMapper.map(categoryDto, Category.class);
         return modelMapper.map(categoryRepository.save(category), Category.class);
     }
 
     @Override
-    public Category updateCategory(CategoryDto categoryDto) throws Exception {
+    public Category updateCategory(CategoryDto categoryDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
 
         Category oldCategory = getCategoryById(categoryDto.getId());
@@ -59,5 +61,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Category> getCategoriesByParentId(Long id, Integer pageNo, Integer perPage) throws Exception {
+        return categoryRepository.findAllByParentId(id, JfsApplication.createPagination(pageNo,perPage));
     }
 }

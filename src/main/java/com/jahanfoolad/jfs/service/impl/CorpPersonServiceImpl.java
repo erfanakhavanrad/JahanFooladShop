@@ -9,11 +9,11 @@ import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.CorpPersonRepository;
 import com.jahanfoolad.jfs.service.CorpPersonService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -43,14 +43,14 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     }
 
     @Override
-    public CorpPerson createCorpPerson(CorpPersonDto corpPersonDto) {
+    public CorpPerson createCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         CorpPerson corpPerson = modelMapper.map(corpPersonDto, CorpPerson.class);
         return modelMapper.map(corpPersonRepository.save(corpPerson), CorpPerson.class);
     }
 
     @Override
-    public CorpPerson updateCorpPerson(CorpPersonDto corpPersonDto) throws Exception {
+    public CorpPerson updateCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
 
         CorpPerson oldCorpPerson = getCorpPersonById(corpPersonDto.getId());
@@ -82,7 +82,7 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     }
 
     @Override
-    public CorpPerson login(CorpPerson corpPerson) throws Exception {
+    public CorpPerson login(CorpPerson corpPerson, HttpServletRequest httpServletRequest) throws Exception {
         CorpPerson userByPhoneNumber = corpPersonRepository.findByCellPhone(corpPerson.getCellPhone());
         if (userByPhoneNumber == null)
             throw new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH));

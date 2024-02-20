@@ -15,6 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,118 +47,134 @@ public class RealPersonController {
         return "Hello.";
     }
 
-    @GetMapping(path = "/forgetpassword")
+    @GetMapping(path = "/forgetPassword")
     public ResponseModel forgetPassword(@RequestParam String userName, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
         try {
+            log.info("forget password");
             responseModel.clear();
             realPersonService.resetPass(userName);
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
-
         return responseModel;
     }
 
-    @GetMapping(path = "/forgetpasswordconfirm")
+    @GetMapping(path = "/forgetPasswordConfirm")
     public ResponseModel forgetPasswordConfirm(@RequestParam String userName, @RequestParam String newPassword, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
 
-        responseModel.clear();
         try {
+            log.info("forget password confirm");
+            responseModel.clear();
             realPersonService.resetPassConfirm(userName, newPassword);
             RealPerson user = realPersonService.getRealPersonByUsername(userName);
             responseModel.setContent(user);
             responseModel.setResult(success);
             responseModel.setRecordCount(1);
             responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setError(e.getMessage());
         }
-
-
         return responseModel;
     }
 
     @PostMapping(path = "/login")
     public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) {
 
-        responseModel.clear();
         try {
-            return realPersonService.login(realPerson , request);
-//            responseModel.setContent(user);
-//            responseModel.setResult(1);
-//            responseModel.setRecordCount(1);
-//            responseModel.setStatus(httpServletResponse.getStatus());
+            log.info("login");
+            responseModel.clear();
+            responseModel.setContent(realPersonService.login(realPerson, request));
+            responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
             responseModel.setError(dataIntegrityViolationException.getMessage());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
-            responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
         return responseModel;
 
     }
 
-    @GetMapping("/getall")
-    public ResponseModel getRealPeople(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
+    @GetMapping("/getAll")
+    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            responseModel.clear();
             log.info("GET ALL USERS");
             List<RealPerson> users = realPersonService.getRealPersons();
             responseModel.setContents(users);
             responseModel.setResult(success);
             responseModel.setRecordCount(users.size());
             responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+        } catch (Exception e) {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
+            responseModel.setError(e.getMessage());
         }
         return responseModel;
     }
 
-    @GetMapping(path = "/getbyid")
-//    public String getUserById(@PathVariable Long userid) {
-    public ResponseModel getRealPersonById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-//        , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse
+    @GetMapping(path = "/getById")
+    public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
-
-            log.info("-------------");
-
+            log.info("getRealPersonById");
             responseModel.clear();
             responseModel.setContent(realPersonService.getRealPersonById(id));
             responseModel.setResult(success);
-//            responseModel.set
-//        return userService.getUserByUserId(userid);
-//        } catch (AccessDeniedException accessDeniedException) {
-//            responseModel.setResult(0);
-//            responseModel.setSystemError(accessDeniedException.getMessage());
-//            responseModel.setError("properties");
-
-//            httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
@@ -165,58 +182,78 @@ public class RealPersonController {
     }
 
     @PostMapping("/save")
-    public ResponseModel createRealPerson(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel save(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
+            log.info("save RealPerson");
             responseModel.clear();
-            responseModel.setContent(realPersonService.createRealPerson(realPersonDto , httpServletRequest));
+            responseModel.setContent(realPersonService.createRealPerson(realPersonDto, httpServletRequest));
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("USER_ALREADY_EXISTS",null, Locale.ENGLISH));
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("USER_ALREADY_EXISTS", null, Locale.ENGLISH));
+        } catch (Exception e) {
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setError(e.getMessage());
         }
         return responseModel;
     }
 
     @PutMapping(path = "/update")
-    public ResponseModel updateRealPerson(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel update(@RequestBody RealPersonDto realPersonDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("update RealPerson");
             responseModel.clear();
-            responseModel.setContent(realPersonService.updateRealPerson(realPersonDto));
+            responseModel.setContent(realPersonService.updateRealPerson(realPersonDto, httpServletRequest));
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+        } catch (Exception e) {
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setError(e.getMessage());
         }
         return responseModel;
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deleteRealPerson(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
-            log.info("DELETE USER");
+            log.info("DELETE RealPerson");
             realPersonService.deleteRealPerson(id);
             responseModel.clear();
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
         return responseModel;
     }
-
 
 }

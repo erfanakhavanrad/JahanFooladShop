@@ -59,7 +59,7 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     // Can throw exception in Header
     @Override
-    public RealPerson createRealPerson(RealPersonDto realPersonDto , HttpServletRequest request) throws Exception {
+    public RealPerson createRealPerson(RealPersonDto realPersonDto, HttpServletRequest request) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
         realPerson.setPassword(generatePassword(realPerson));
@@ -70,7 +70,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public RealPerson updateRealPerson(RealPersonDto realPersonDto) throws Exception {
+    public RealPerson updateRealPerson(RealPersonDto realPersonDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
 
         RealPerson oldRealPerson = getRealPersonById(realPersonDto.getId());
@@ -100,8 +100,8 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public ResponseModel login(RealPerson realPerson , HttpServletRequest request) throws Exception {
-        return personService.login(realPerson , request);
+    public ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception {
+        return personService.login(realPerson, request);
     }
 
     @Override

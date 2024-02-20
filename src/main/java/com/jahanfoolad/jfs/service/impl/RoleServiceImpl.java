@@ -1,12 +1,12 @@
 package com.jahanfoolad.jfs.service.impl;
 
-import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.Role;
 import com.jahanfoolad.jfs.domain.dto.RoleDto;
 import com.jahanfoolad.jfs.jpaRepository.RoleRepository;
 import com.jahanfoolad.jfs.service.RoleService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -38,14 +38,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role createRole(RoleDto roleDto) {
+    public Role createRole(RoleDto roleDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Role role = modelMapper.map(roleDto, Role.class);
         return modelMapper.map(roleRepository.save(role), Role.class);
     }
 
     @Override
-    public Role updateRole(RoleDto roleDto) throws Exception {
+    public Role updateRole(RoleDto roleDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
 
         Role oldRole = getRoleById(roleDto.getId());

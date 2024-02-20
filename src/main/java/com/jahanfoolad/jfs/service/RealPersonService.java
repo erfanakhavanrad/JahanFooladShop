@@ -8,17 +8,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface RealPersonService {
-    List<RealPerson> getRealPersons();
+    List<RealPerson> getRealPersons() throws Exception;
 
     RealPerson getRealPersonById(Long id) throws Exception;
 
     RealPerson getRealPersonByUsername(String userName) throws Exception;
 
-    RealPerson createRealPerson(RealPersonDto realPersonDto  , HttpServletRequest request) throws Exception;
+    RealPerson createRealPerson(RealPersonDto realPersonDto, HttpServletRequest request) throws Exception;
 
-    RealPerson updateRealPerson(RealPersonDto realPersonDto) throws Exception;
+    RealPerson updateRealPerson(RealPersonDto realPersonDto, HttpServletRequest httpServletRequest) throws Exception;
 
-    void deleteRealPerson(Long id);
+    void deleteRealPerson(Long id) throws Exception;
 
     RealPerson findByMobile(RealPerson realPerson) throws Exception;
 
@@ -26,7 +26,7 @@ public interface RealPersonService {
 
     void resetPassConfirm(String userName, String newPassword) throws Exception;
 
-    ResponseModel login(RealPerson realPerson , HttpServletRequest request) throws Exception;
+    ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception;
 
     void resetPass(RealPerson byMobile, String newPassword) throws Exception;
 

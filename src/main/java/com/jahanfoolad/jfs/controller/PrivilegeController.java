@@ -4,23 +4,33 @@ import com.jahanfoolad.jfs.domain.Privilege;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.PrivilegeDto;
 import com.jahanfoolad.jfs.service.PrivilegeService;
+import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Locale;
 
+@Slf4j
 @RequestMapping("/privilege")
 @RestController
 public class PrivilegeController {
+
     @Autowired
     PrivilegeService privilegeService;
 
     @Autowired
     ResponseModel responseModel;
+
+    @Resource(name = "faMessageSource")
+    private MessageSource faMessageSource;
 
     @Value("${SUCCESS_RESULT}")
     int success;
@@ -28,10 +38,11 @@ public class PrivilegeController {
     @Value("${FAIL_RESULT}")
     int fail;
 
-    @GetMapping("/getall")
-    public ResponseModel getPrivileges(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
+    @GetMapping("/getAll")
+    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("getAll Privilege");
+            responseModel.clear();
             List<Privilege> privileges = privilegeService.getPrivileges();
             responseModel.setContents(privileges);
             responseModel.setResult(success);
@@ -40,9 +51,10 @@ public class PrivilegeController {
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
@@ -50,19 +62,21 @@ public class PrivilegeController {
     }
 
 
-    @GetMapping(path = "/getbyid")
-    public ResponseModel getPrivilegeById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    @GetMapping(path = "/getById")
+    public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("getById Privilege");
             responseModel.clear();
             responseModel.setContent(privilegeService.getPrivilegeById(id));
             responseModel.setResult(success);
-
+            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
@@ -71,37 +85,52 @@ public class PrivilegeController {
 
 
     @PostMapping("/save")
-    public ResponseModel createPrivilege(@RequestBody PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel save(@RequestBody PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
+            log.info("save Privilege");
             responseModel.clear();
-            responseModel.setContent(privilegeService.createPrivilege(privilegeDto));
+            responseModel.setContent(privilegeService.createPrivilege(privilegeDto, httpServletRequest));
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+        } catch (Exception e) {
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
+            responseModel.setError(e.getMessage());
         }
         return responseModel;
     }
 
 
     @PutMapping(path = "/update")
-    public ResponseModel updatePrivilege(@RequestBody PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel update(@RequestBody PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("update Privilege");
             responseModel.clear();
-            responseModel.setContent(privilegeService.updatePrivilege(privilegeDto));
+            responseModel.setContent(privilegeService.updatePrivilege(privilegeDto, httpServletRequest));
             responseModel.setResult(success);
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }
@@ -109,15 +138,15 @@ public class PrivilegeController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseModel deletePrivilege(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
+    public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
+            log.info("delete Privilege");
+            responseModel.clear();
             privilegeService.deletePrivilege(id);
             responseModel.clear();
             responseModel.setResult(success);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        } finally {
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
         }

@@ -1,26 +1,26 @@
 package com.jahanfoolad.jfs.service;
 
-import com.jahanfoolad.jfs.domain.Contact;
 import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface CorpPersonService {
-    List<CorpPerson> getCorpPeople();
+    List<CorpPerson> getCorpPeople() throws Exception;
 
     CorpPerson getCorpPersonById(Long id) throws Exception;
 
-    CorpPerson createCorpPerson(CorpPersonDto corpPersonDto);
+    CorpPerson createCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) throws Exception;
 
-    CorpPerson updateCorpPerson(CorpPersonDto corpPersonDto) throws Exception;
+    CorpPerson updateCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) throws Exception;
 
-    Page<CorpPerson> findByContact(ContactDto contactDto, Integer pageNo, Integer perPage);
+    Page<CorpPerson> findByContact(ContactDto contactDto, Integer pageNo, Integer perPage) throws Exception;
 
     void deleteCorpPerson(Long id);
 
-    CorpPerson login(CorpPerson corpPerson) throws Exception;
+    CorpPerson login(CorpPerson corpPerson, HttpServletRequest httpServletRequest) throws Exception;
 
 }
