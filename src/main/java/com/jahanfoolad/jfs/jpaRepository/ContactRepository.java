@@ -8,4 +8,6 @@ import java.util.List;
 public interface ContactRepository  extends JpaRepository<Contact , Long> {
 
     List<Contact> findAllByProvince(String province);
+    List<Contact> findAllByCity(String city);
+
 }

@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Product;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
@@ -14,6 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +35,8 @@ public class ProductServiceImpl implements ProductService {
     private MessageSource faMessageSource;
 
     @Override
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+    public Page<Product> getProducts( Integer pageNo, Integer perPage) {
+        return productRepository.findAll(JfsApplication.createPagination(pageNo,perPage));
     }
 
     @Override

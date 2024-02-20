@@ -1,18 +1,20 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.File;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
 import com.jahanfoolad.jfs.jpaRepository.FileRepository;
 import com.jahanfoolad.jfs.service.FileService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -30,8 +32,8 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public List<File> getFiles() {
-        return fileRepository.findAll();
+    public Page<File> getFiles(Integer pageNo, Integer perPage) {
+        return fileRepository.findAll(JfsApplication.createPagination(pageNo,perPage));
     }
 
     @Override
@@ -40,7 +42,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File createFile(FileDto fileDto) {
+    public File createFile(FileDto fileDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         File file = modelMapper.map(fileDto,File.class);
         return modelMapper.map(fileRepository.save(file) , File.class);
@@ -52,7 +54,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File updateFile(FileDto fileDto) throws Exception {
+    public File updateFile(FileDto fileDto, HttpServletRequest httpServletRequest) throws Exception {
         log.info("update file");
         responseModel.clear();
 

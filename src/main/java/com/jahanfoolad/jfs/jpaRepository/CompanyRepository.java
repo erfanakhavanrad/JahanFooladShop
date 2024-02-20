@@ -15,7 +15,5 @@ import java.util.List;
 public interface CompanyRepository extends JpaRepository<Company , Long> {
 //    List<Company> findCompaniesBy(@Param("name") String name);
 
-//    List<Company> findByCategoryId(Long categoryId);
-//    List<Company> findByCityId(Long cityId);
       Page<Company> findAllByContactListIn(List<Contact> contactList , Pageable pageable);
 }
