@@ -3,6 +3,7 @@ package com.jahanfoolad.jfs.domain.dto;
 import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.File;
 
+import com.jahanfoolad.jfs.domain.ProductAttribute;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class ProductDto implements Serializable {
     private String company;
     private List<File> fileList;
     private List<Category> categoryList;
+    private List<ProductAttribute> productAttributeList;
 //    private List<Price> priceList;
 //    private List<ProductProvider> productProviderList;
 

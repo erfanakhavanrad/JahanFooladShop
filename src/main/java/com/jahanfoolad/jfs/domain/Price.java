@@ -17,11 +17,4 @@ public class Price extends AbstractEntity {
     @Column
     private Date lastPriceUpdate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_price",
-            joinColumns =
-            @JoinColumn(name = "productattribute_priceList", referencedColumnName = "priceList"),
-            inverseJoinColumns =
-            @JoinColumn(name = "price_productattribute", referencedColumnName = "productAttribute"))
-    private ProductAttribute productAttribute;
 }

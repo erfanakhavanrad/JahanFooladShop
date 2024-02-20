@@ -8,10 +8,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import java.util.List;
 
 @Entity
-@Table(name="ProductAttribute")
+@Table(name = "ProductAttribute")
 @Getter
 @Setter
-public class ProductAttribute extends  AbstractEntity {
+public class ProductAttribute extends AbstractEntity {
 
     @Column
     private Double length;
@@ -52,14 +52,14 @@ public class ProductAttribute extends  AbstractEntity {
     @Column
     private String deliveryPlace;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "product_price",
-            joinColumns =
-            @JoinColumn(name = "price_productattribute", referencedColumnName = "productAttribute"),
-            inverseJoinColumns =
-            @JoinColumn(name = "productattribute_priceList", referencedColumnName = "priceList"))
+    @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Price> priceList;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Product> productList;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id")
+    private Product productList;
+//
+//    @Column
+//    private Long productId;
+
 }
