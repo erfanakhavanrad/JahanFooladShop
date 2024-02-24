@@ -103,7 +103,25 @@ public class ProductController {
         }
 
         return responseModel;
+    }
 
+    @PutMapping("/update")
+    public ResponseModel update(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+
+        try{
+            log.info("update product");
+            responseModel.setContent(productService.updateProduct(productDto));
+            responseModel.setResult(success);
+        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        }catch (Exception e){
+            responseModel.setError(e.getMessage());
+        }
+
+        return  responseModel;
     }
 
     @DeleteMapping("/delete/{id}")
@@ -126,22 +144,4 @@ public class ProductController {
         return responseModel;
     }
 
-    @PutMapping("/update")
-    public ResponseModel update(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
-
-        try{
-            log.info("update file");
-            responseModel.setContent(productService.updateProduct(productDto));
-            responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
-            responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        }
-
-        return  responseModel;
-    }
 }
