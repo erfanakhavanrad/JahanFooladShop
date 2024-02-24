@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "Category")
 @Getter
@@ -17,4 +15,5 @@ public class Category extends AbstractEntity {
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
     private File thumbnail;
+
 }

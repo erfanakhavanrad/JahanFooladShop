@@ -41,9 +41,9 @@ public class ProductController {
     @GetMapping("/getAll")
     public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-        responseModel.clear();
         try {
             log.info("get product");
+            responseModel.clear();
             Page<Product> products = productService.getProducts(pageNo,perPage);
             responseModel.setContent(products);
             responseModel.setResult(success);
@@ -64,9 +64,9 @@ public class ProductController {
     @GetMapping("/getById")
     public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-        responseModel.clear();
 
         try {
+            responseModel.clear();
             log.info("get product by id");
             responseModel.setContent(productService.getProductById(id));
             responseModel.setResult(success);
@@ -108,9 +108,9 @@ public class ProductController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
 
         try {
+            responseModel.clear();
             log.info("delete product");
             productService.deleteProduct(id);
             responseModel.setResult(success);

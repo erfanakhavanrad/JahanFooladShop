@@ -1,9 +1,11 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Price;
 import com.jahanfoolad.jfs.domain.ProductAttribute;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.ProductAttributeDto;
+import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
 import com.jahanfoolad.jfs.service.ProductAttributeService;
 import jakarta.annotation.Resource;
@@ -22,6 +24,9 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     @Autowired
     ProductAttributeRepository productAttributeRepository;
+
+    @Autowired
+    PriceRepository priceRepository;
 
     @Autowired
     ResponseModel responseModel;
@@ -48,14 +53,16 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     }
 
     @Override
-    public List<ProductAttribute> createProductAttributes(List<ProductAttribute> productAttribute) throws Exception {
-        return productAttributeRepository.saveAll(productAttribute);
+    public List<ProductAttribute> createProductAttributes(List<ProductAttribute> productAttributeList) throws Exception {
+        for (ProductAttribute productAttribute : productAttributeList) {
+            savePrice(productAttribute.getPriceList());
+        }
+        return productAttributeRepository.saveAll(productAttributeList);
     }
-//
-//    public List<ProductAttribute> createProductAttributes(List<ProductAttribute> productAttribute, HttpServletRequest httpServletRequest) throws Exception {
-//
-//        return productAttributeRepository.saveAll(productAttribute);
-//    }
+
+    private List<Price> savePrice(List<Price> priceList) {
+        return priceRepository.saveAll(priceList);
+    }
 
     @Override
     public void deleteProductAttribute(Long id) {

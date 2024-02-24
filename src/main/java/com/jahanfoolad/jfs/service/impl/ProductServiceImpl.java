@@ -6,6 +6,7 @@ import com.jahanfoolad.jfs.domain.ProductAttribute;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
 import com.jahanfoolad.jfs.domain.dto.ProductDto;
+import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductRepository;
@@ -38,6 +39,9 @@ public class ProductServiceImpl implements ProductService {
     ProductAttributeService productAttributeService;
 
     @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
     PriceRepository priceRepository;
 
     @Autowired
@@ -60,11 +64,9 @@ public class ProductServiceImpl implements ProductService {
     public Product createProduct(ProductDto productDto) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         Product product = modelMapper.map(productDto, Product.class);
-//        ProductAttribute productAttribute = modelMapper.map(productDto.getProductAttributeList(), ProductAttribute.class);
         List<ProductAttribute> savedProductAttributes = productAttributeService.createProductAttributes(product.getProductAttributeList());
+
         product.setProductAttributeList(savedProductAttributes);
-//        List<ProductAttribute> savedProductAttributes = productAttributeRepository.saveAll(productDto.getProductAttributeList());
-//        product.setProductAttributeList(savedProductAttributes);
         return modelMapper.map(productRepository.save(product), Product.class);
     }
 

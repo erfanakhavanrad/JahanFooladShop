@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="Product")
+@Table(name = "Product")
 @Getter
 @Setter
 public class Product extends AbstractEntity {
@@ -24,21 +24,18 @@ public class Product extends AbstractEntity {
     @OneToMany(cascade = {CascadeType.ALL})
     private List<File> fileList;
 
-    @OneToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
-    private List<Category> categoryList;
-
-//    @OneToMany(cascade = {CascadeType.ALL})
-//    private List<Price> priceList;
-//    @OneToMany(cascade = {CascadeType.ALL})
-//    private List<ProductProvider> productProviderList;
-
-    @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 //    @JoinTable(name = "product_to_attribute",
 //            joinColumns =
 //            @JoinColumn(name = "product_attribute_list", referencedColumnName = "id"),
 //            inverseJoinColumns =
 //            @JoinColumn(name = "product", referencedColumnName = "product_list"))
     private List<ProductAttribute> productAttributeList;
+
+
+    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private List<Category> categoryList;
 
 
 }
