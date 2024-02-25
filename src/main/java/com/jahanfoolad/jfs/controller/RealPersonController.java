@@ -34,11 +34,11 @@ public class RealPersonController {
     @Autowired
     SmsService smsService;
 
-    @Value("${SUCCESS_RESULT}")
-    int success;
+    //    @Value("${SUCCESS_RESULT}")
+    int success = 1;
 
-    @Value("${FAIL_RESULT}")
-    int fail;
+    //    @Value("${FAIL_RESULT}")
+    int fail = 0;
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
@@ -102,30 +102,8 @@ public class RealPersonController {
 
     @PostMapping(path = "/login")
     public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) {
-
-        try {
-            log.info("login");
             responseModel.clear();
-            responseModel.setContent(realPersonService.login(realPerson, request));
-            responseModel.setResult(success);
-            responseModel.setStatus(httpServletResponse.getStatus());
-        } catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
-            responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setStatus(httpServletResponse.getStatus());
-            responseModel.setResult(fail);
-            responseModel.setError(dataIntegrityViolationException.getMessage());
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-            responseModel.setResult(fail);
-            responseModel.setStatus(httpServletResponse.getStatus());
-        }
-        return responseModel;
-
+            return realPersonService.login(realPerson, request);
     }
 
     @GetMapping("/getAll")

@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
-    Page<Product> findAllByFileListIn(List<Product> productList, PageRequest of);
+    Page<Product> findAllByFilesIn(List<Product> productList, PageRequest of);
 }

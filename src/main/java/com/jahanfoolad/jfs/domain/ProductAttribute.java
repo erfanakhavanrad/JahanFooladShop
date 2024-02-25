@@ -53,11 +53,11 @@ public class ProductAttribute extends AbstractEntity {
     private String deliveryPlace;
 
     @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
-    private List<Price> priceList;
+    private List<Price> prices;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
-    private Product productList;
+    private Product product;
 //
 //    @Column
 //    private Long productId;

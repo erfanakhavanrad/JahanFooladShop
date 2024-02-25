@@ -194,14 +194,12 @@ public class SecurityService {
                 responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
                 responseModel.setSystemError(exc.toString());
                 responseModel.setContent(null);
-
             }
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
         return responseModel;
     }
-
 
     @Async
     public Future<ResponseModel> getUserByTokenAsync(HttpServletRequest request) {

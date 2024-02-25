@@ -102,8 +102,15 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception {
-        return personService.login(realPerson, request);
+    public ResponseModel login(RealPerson realPerson, HttpServletRequest request){
+        try {
+            return personService.login(realPerson, request);
+        }catch (Exception e){
+            responseModel.setResult(personService.fail);
+            responseModel.setError(e.getMessage());
+            responseModel.setError(e.toString());
+            return responseModel;
+        }
     }
 
     @Override

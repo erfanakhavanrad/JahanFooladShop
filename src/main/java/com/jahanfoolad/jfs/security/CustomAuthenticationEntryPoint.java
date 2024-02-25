@@ -33,29 +33,35 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
         // 401
-        response.setContentType("application/json");
+        response.setContentType("application/jso;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getOutputStream().println(getErrorModel(response.getStatus(), faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH), authException.getMessage()));
+        response.getWriter().println(getErrorModel(response.getStatus(), faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH), authException.getMessage()));
+        response.getWriter().close();
     }
 
     @ExceptionHandler(value = {AccessDeniedException.class})
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AccessDeniedException accessDeniedException) throws IOException {
         // 403
-        response.setContentType("application/json");
+        response.setContentType("application/jso;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getOutputStream().println(getErrorModel(response.getStatus(),
+        response.getWriter().println(getErrorModel(response.getStatus(),
                 faMessageSource.getMessage("ACCESS_DENIED" , null , Locale.ENGLISH), accessDeniedException.getMessage()));
+        response.getWriter().close();
     }
 
     @ExceptionHandler(value = {Exception.class})
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          Exception exception) throws IOException {
-        response.setContentType("application/json");
+        response.setContentType("application/jso;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        response.getOutputStream().println(getErrorModel(response.getStatus(),
+        response.getWriter().println(getErrorModel(response.getStatus(),
                 faMessageSource.getMessage("UNKNOWN_TRANSACTION_ERROR" , null , Locale.ENGLISH),
                 exception.getMessage()));
+        response.getWriter().close();
     }
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

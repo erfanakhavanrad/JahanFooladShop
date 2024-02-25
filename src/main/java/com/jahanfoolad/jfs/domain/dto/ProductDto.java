@@ -5,6 +5,7 @@ import com.jahanfoolad.jfs.domain.File;
 
 import com.jahanfoolad.jfs.domain.ProductAttribute;
 import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,11 +24,11 @@ public class ProductDto implements Serializable {
     private String name;
     private String code;
     private String brand;
-    private String company;
-    private List<File> fileList;
-    private List<Category> categoryList;
-    private List<ProductAttribute> productAttributeList;
-//    private List<Price> priceList;
-//    private List<ProductProvider> productProviderList;
 
+    @NotBlank(message = "company id is mandatory")
+    private Long companyId;
+
+    private List<File> files;
+    private List<Category> categories;
+    private List<ProductAttribute> productAttributeList;
 }

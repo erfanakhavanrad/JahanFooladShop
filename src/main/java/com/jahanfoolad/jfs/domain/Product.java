@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,30 +13,26 @@ import java.util.List;
 @Setter
 public class Product extends AbstractEntity {
 
-    @Column
+    @Column(unique = true)
     private String name;
-    @Column
+
+    @Column(unique = true)
     private String code;
+
     @Column
     private String brand;
     @Column
-    private String company;
+    private Long company;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<File> fileList;
+    private List<File> files;
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-//    @JoinTable(name = "product_to_attribute",
-//            joinColumns =
-//            @JoinColumn(name = "product_attribute_list", referencedColumnName = "id"),
-//            inverseJoinColumns =
-//            @JoinColumn(name = "product", referencedColumnName = "product_list"))
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private List<ProductAttribute> productAttributeList;
 
 
-    @OneToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private List<Category> categoryList;
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    private List<Category> categories;
 
 
 }

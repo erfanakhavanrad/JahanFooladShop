@@ -55,7 +55,7 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Override
     public List<ProductAttribute> createProductAttributes(List<ProductAttribute> productAttributeList) throws Exception {
         for (ProductAttribute productAttribute : productAttributeList) {
-            savePrice(productAttribute.getPriceList());
+            savePrice(productAttribute.getPrices());
         }
         return productAttributeRepository.saveAll(productAttributeList);
     }

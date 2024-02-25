@@ -54,8 +54,8 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             ResponseModel responseModel = new ResponseModel();
             responseModel.setResult(-1);
-            responseModel.setSystemError(e.getCause().toString());
-            responseModel.setError(e.getCause().toString());
+            responseModel.setSystemError(e.toString());
+            responseModel.setError(e.getMessage());
             responseModel.setContent(new Object());
             responseModel.setContents(new ArrayList<>());
             responseModel.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

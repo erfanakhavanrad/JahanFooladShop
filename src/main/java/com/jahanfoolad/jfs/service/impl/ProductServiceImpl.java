@@ -10,6 +10,7 @@ import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductRepository;
+import com.jahanfoolad.jfs.service.CompanyService;
 import com.jahanfoolad.jfs.service.ProductAttributeService;
 import com.jahanfoolad.jfs.service.ProductService;
 import jakarta.annotation.Resource;
@@ -47,6 +48,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    CompanyService companyService;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -62,12 +66,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(ProductDto productDto) throws Exception {
+        companyService.getCompanyById(productDto.getCompanyId()); // message should change for all not found , ex : company not found
         ModelMapper modelMapper = new ModelMapper();
         Product product = modelMapper.map(productDto, Product.class);
         List<ProductAttribute> savedProductAttributes = productAttributeService.createProductAttributes(product.getProductAttributeList());
-
         product.setProductAttributeList(savedProductAttributes);
-        return modelMapper.map(productRepository.save(product), Product.class);
+        return productRepository.save(product);
     }
 
     @Override
@@ -86,8 +90,8 @@ public class ProductServiceImpl implements ProductService {
         Product newProduct = modelMapper.map(productDto, Product.class);
         Product updated = (Product) responseModel.merge(foundProduct, newProduct);
 
-        if (newProduct.getFileList() != null && !newProduct.getFileList().isEmpty()) {
-            updated.setFileList(newProduct.getFileList());
+        if (newProduct.getFiles() != null && !newProduct.getFiles().isEmpty()) {
+            updated.setFiles(newProduct.getFiles());
         }
         return productRepository.save(updated);
     }
@@ -100,6 +104,6 @@ public class ProductServiceImpl implements ProductService {
         product.setId(702l);
         List<Product> productList = new ArrayList<>();
         productList.add(product);
-        return productRepository.findAllByFileListIn(productList, PageRequest.of(pageNo, perPage));
+        return productRepository.findAllByFilesIn(productList, PageRequest.of(pageNo, perPage));
     }
 }

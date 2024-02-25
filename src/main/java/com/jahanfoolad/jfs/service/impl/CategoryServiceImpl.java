@@ -2,9 +2,11 @@ package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Category;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.CategoryDto;
 import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.CategoryService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +31,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    private SecurityService securityService;
+
     @Override
     public Page<Category> getCategories(Integer pageNo, Integer perPage) {
         return categoryRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
@@ -43,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category createCategory(CategoryDto categoryDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Category category = modelMapper.map(categoryDto, Category.class);
+        category.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
         return modelMapper.map(categoryRepository.save(category), Category.class);
     }
 

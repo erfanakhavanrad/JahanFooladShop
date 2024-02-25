@@ -19,8 +19,8 @@ public class CorpPersonDto implements Serializable {
     private String agentName;
     private String cellPhone;
     private String email;
-    private Boolean verified;
-    private Boolean activated;
+    private Boolean verified = false;
+    private Boolean isActive  = true;
     private List<ContactDto> contactList;
 
 }

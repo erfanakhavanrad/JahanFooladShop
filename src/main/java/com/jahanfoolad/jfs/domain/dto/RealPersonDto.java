@@ -20,8 +20,8 @@ public class RealPersonDto implements Serializable {
     private String nationalNumber;
     private String cellPhone;
     private String email;
-    private Boolean verified;
-    private Boolean activated;
+    private Boolean verified = false;
+    private Boolean isActive  = true;
 //    private String password;
 //    private String encryptedPassword;
     private List<ContactDto> contactDtoList;

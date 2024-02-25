@@ -27,7 +27,7 @@ public interface RealPersonService {
 
     void resetPassConfirm(String userName, String newPassword) throws Exception;
 
-    ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception;
+    ResponseModel login(RealPerson realPerson, HttpServletRequest request);
 
     void resetPass(RealPerson byMobile, String newPassword) throws Exception;
 
