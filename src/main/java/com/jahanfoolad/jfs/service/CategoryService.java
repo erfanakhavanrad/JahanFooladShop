@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface CategoryService {
-    List<Category> getCategories() throws Exception;
+    Page<Category> getCategories(Integer pageNo, Integer perPage) throws Exception;
 
     Category getCategoryById(Long id) throws Exception;
 

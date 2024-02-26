@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -39,14 +40,14 @@ public class PrivilegeController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             log.info("getAll Privilege");
             responseModel.clear();
-            List<Privilege> privileges = privilegeService.getPrivileges();
-            responseModel.setContents(privileges);
+            Page<Privilege> privileges = privilegeService.getPrivileges(pageNo, perPage);
+            responseModel.setContent(privileges);
             responseModel.setResult(success);
-            responseModel.setRecordCount(privileges.size());
+            responseModel.setRecordCount((int) privileges.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());

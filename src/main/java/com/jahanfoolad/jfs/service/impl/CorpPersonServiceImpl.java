@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,8 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     ResponseModel responseModel;
 
     @Override
-    public List<CorpPerson> getCorpPeople() {
-        return corpPersonRepository.findAll();
+    public Page<CorpPerson> getCorpPeople(Integer pageNo, Integer perPage) {
+        return corpPersonRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class CorpPersonServiceImpl implements CorpPersonService {
         List<Contact> contactList = new ArrayList<>();
         contact.setId(452L);
         contactList.add(contact);
-        return corpPersonRepository.findAllByContactListIn(contactList,JfsApplication.createPagination(pageNo, perPage));
+        return corpPersonRepository.findAllByContactListIn(contactList, JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override

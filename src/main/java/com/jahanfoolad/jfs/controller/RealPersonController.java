@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
@@ -128,14 +129,14 @@ public class RealPersonController {
     }
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
             log.info("GET ALL USERS");
-            List<RealPerson> users = realPersonService.getRealPersons();
-            responseModel.setContents(users);
+            Page<RealPerson> users = realPersonService.getRealPeople(pageNo, perPage);
+            responseModel.setContent(users);
             responseModel.setResult(success);
-            responseModel.setRecordCount(users.size());
+            responseModel.setRecordCount((int) users.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));

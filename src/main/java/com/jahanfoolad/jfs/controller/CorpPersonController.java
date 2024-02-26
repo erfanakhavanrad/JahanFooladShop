@@ -65,14 +65,14 @@ public class CorpPersonController {
 
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             log.info("get all corp people");
             responseModel.clear();
-            List<CorpPerson> corpPeople = corpPersonService.getCorpPeople();
-            responseModel.setContents(corpPeople);
+            Page<CorpPerson> corpPeople = corpPersonService.getCorpPeople(pageNo, perPage);
+            responseModel.setContent(corpPeople);
             responseModel.setResult(success);
-            responseModel.setRecordCount(corpPeople.size());
+            responseModel.setRecordCount((int) corpPeople.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));

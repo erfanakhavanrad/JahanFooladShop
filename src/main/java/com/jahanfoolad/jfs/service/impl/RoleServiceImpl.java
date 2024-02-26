@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.Role;
 import com.jahanfoolad.jfs.domain.dto.RoleDto;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class RoleServiceImpl implements RoleService {
     ResponseModel responseModel;
 
     @Override
-    public List<Role> getRoles() {
-        return roleRepository.findAll();
+    public Page<Role> getRoles(Integer pageNo, Integer perPage) {
+        return roleRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override

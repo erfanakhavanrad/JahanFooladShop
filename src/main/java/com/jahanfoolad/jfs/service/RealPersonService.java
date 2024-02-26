@@ -4,11 +4,12 @@ import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface RealPersonService {
-    List<RealPerson> getRealPersons() throws Exception;
+    Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) throws Exception;
 
     RealPerson getRealPersonById(Long id) throws Exception;
 

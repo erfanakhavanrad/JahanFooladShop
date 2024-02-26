@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Privilege;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.PrivilegeDto;
@@ -10,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +30,8 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     ResponseModel responseModel;
 
     @Override
-    public List<Privilege> getPrivileges() {
-        return privilegeRepository.findAll();
+    public Page<Privilege> getPrivileges(Integer pageNo, Integer perPage) {
+        return privilegeRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override

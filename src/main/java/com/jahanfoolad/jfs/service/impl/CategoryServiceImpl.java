@@ -30,8 +30,8 @@ public class CategoryServiceImpl implements CategoryService {
     ResponseModel responseModel;
 
     @Override
-    public List<Category> getCategories() {
-        return categoryRepository.findAll();
+    public Page<Category> getCategories(Integer pageNo, Integer perPage) {
+        return categoryRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override

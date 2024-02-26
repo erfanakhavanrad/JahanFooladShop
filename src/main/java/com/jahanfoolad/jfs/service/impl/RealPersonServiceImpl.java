@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.service.impl;
 
+import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ public class RealPersonServiceImpl implements RealPersonService {
     PersonService<RealPerson> personService;
 
     @Override
-    public List<RealPerson> getRealPersons() {
-        return realPersonRepository.findAll();
+    public Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) {
+        return realPersonRepository.findAll(JfsApplication.createPagination(perPage, pageNo));
     }
 
 //    private String newPassword;

@@ -41,14 +41,14 @@ public class CategoryController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             responseModel.clear();
             log.info("get all category");
-            List<Category> categories = categoryService.getCategories();
-            responseModel.setContents(categories);
+            Page<Category> categories = categoryService.getCategories(pageNo,perPage);
+            responseModel.setContent(categories);
             responseModel.setResult(success);
-            responseModel.setRecordCount(categories.size());
+            responseModel.setRecordCount((int) categories.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
