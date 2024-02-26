@@ -13,10 +13,14 @@ import lombok.Setter;
 public class File extends AbstractEntity{
 
     @Column
-    private String name;
+    private String title;
+    @Column
+    private Long name;
     @Column
     private String extension;
     @Column
     private String url;
+    @Column
+    boolean isMain = false;
 
 }

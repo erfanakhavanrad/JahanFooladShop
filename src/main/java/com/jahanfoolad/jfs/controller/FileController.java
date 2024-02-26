@@ -15,6 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
 import java.util.Locale;
@@ -41,12 +42,11 @@ public class FileController {
 
     @GetMapping("/getAll")
     public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
         responseModel.clear();
         try {
             log.info("get file");
             Page<File> files = fileService.getFiles(pageNo,perPage);
-            responseModel.setContent(files);
+            responseModel.setContents(files.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) files.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -63,9 +63,7 @@ public class FileController {
 
     @GetMapping("/getById")
     public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
         responseModel.clear();
-
         try {
             log.info("get file by id");
             responseModel.setContent(fileService.getFileByUserId(id));
@@ -83,27 +81,8 @@ public class FileController {
     }
 
     @PostMapping("/save")
-    public ResponseModel save(@RequestBody FileDto fileDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
-
-        try {
-            log.info("create file");
-            responseModel.setContent(fileService.createFile(fileDto,httpServletRequest));
-            responseModel.setResult(success);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
-            responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
-        }
-
-        return responseModel;
-
+    public ResponseModel save(@RequestParam("file") MultipartFile file,String title, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        return fileService.createFile(file ,title,httpServletRequest);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -126,26 +105,26 @@ public class FileController {
         return responseModel;
     }
 
-    @PutMapping("/update")
-    public ResponseModel update(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
-
-        try{
-            log.info("update file");
-            responseModel.setContent(fileService.updateFile(fileDto,httpServletRequest));
-            responseModel.setResult(success);
-        }catch (DataIntegrityViolationException dataIntegrityViolationException){
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
-            responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }catch (Exception e){
-            responseModel.setError(e.getMessage());
-        }
-
-        return  responseModel;
-    }
+//    @PutMapping("/update")
+//    public ResponseModel update(@RequestBody FileDto fileDto , HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+//
+//        try{
+//            log.info("update file");
+//            responseModel.setContent(fileService.updateFile(fileDto,httpServletRequest));
+//            responseModel.setResult(success);
+//        }catch (DataIntegrityViolationException dataIntegrityViolationException){
+//            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+//            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
+//        }catch (AccessDeniedException accessDeniedException) {
+//            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+//            responseModel.setResult(fail);
+//            responseModel.setSystemError(accessDeniedException.getMessage());
+//            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//        }catch (Exception e){
+//            responseModel.setError(e.getMessage());
+//        }
+//
+//        return  responseModel;
+//    }
 
 }

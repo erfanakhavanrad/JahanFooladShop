@@ -14,8 +14,9 @@ public class FileDto implements Serializable {
     private static final long serialVersionUID = 1469773962182414207L;
 
     private Long   id;
-    private String name;
+    private Long  name;
     private String extension;
+    private String title;
     private String url;
 
 }
