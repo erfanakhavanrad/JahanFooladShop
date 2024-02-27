@@ -10,7 +10,7 @@ import java.util.List;
 @Table(name = "Company")
 @Getter
 @Setter
-public class Company extends AbstractEntity{
+public class Company extends AbstractEntity {
 
     @Column
     private String name;
@@ -28,7 +28,7 @@ public class Company extends AbstractEntity{
     private Boolean verified;
     @Column
     private Boolean isActive;
-    @OneToMany(cascade = {CascadeType.ALL} , fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<Contact> contactList;
     // TODO: 2/12/2024
 //    @OneToMany(cascade = {CascadeType.ALL})

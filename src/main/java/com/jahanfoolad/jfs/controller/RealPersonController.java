@@ -2,6 +2,7 @@ package com.jahanfoolad.jfs.controller;
 
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.dto.LoginDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -34,11 +34,11 @@ public class RealPersonController {
     @Autowired
     SmsService smsService;
 
-    //    @Value("${SUCCESS_RESULT}")
-    int success = 1;
+    @Value("${SUCCESS_RESULT}")
+    int success;
 
-    //    @Value("${FAIL_RESULT}")
-    int fail = 0;
+    @Value("${FAIL_RESULT}")
+    int fail;
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
@@ -102,8 +102,8 @@ public class RealPersonController {
 
     @PostMapping(path = "/login")
     public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) {
-            responseModel.clear();
-            return realPersonService.login(realPerson, request);
+        responseModel.clear();
+        return realPersonService.login(realPerson, request);
     }
 
     @GetMapping("/getAll")
@@ -112,7 +112,7 @@ public class RealPersonController {
             responseModel.clear();
             log.info("GET ALL USERS");
             Page<RealPerson> users = realPersonService.getRealPeople(pageNo, perPage);
-            responseModel.setContent(users);
+            responseModel.setContents(users.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) users.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());

@@ -22,7 +22,7 @@ public class Product extends AbstractEntity {
     @Column
     private String brand;
     @Column
-    private Long company;
+    private Long companyId;
 
     @OneToMany(cascade = {CascadeType.ALL})
     private List<File> files;

@@ -46,7 +46,7 @@ public class CategoryController {
             responseModel.clear();
             log.info("get all category");
             Page<Category> categories = categoryService.getCategories(pageNo,perPage);
-            responseModel.setContent(categories);
+            responseModel.setContents(categories.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) categories.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -166,7 +166,7 @@ public class CategoryController {
             log.info("get by Parent ById");
             responseModel.clear();
             Page<Category> categoryByParentId = categoryService.getCategoriesByParentId(id, pageNo, perPage);
-            responseModel.setContent(categoryByParentId);
+            responseModel.setContents(categoryByParentId.getContent());
             responseModel.setRecordCount((int) categoryByParentId.getTotalElements());
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());

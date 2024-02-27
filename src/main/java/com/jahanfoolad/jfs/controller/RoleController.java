@@ -46,7 +46,7 @@ public class RoleController {
             log.info("Get all Roles");
             responseModel.clear();
             Page<Role> roles = roleService.getRoles(pageNo,perPage);
-            responseModel.setContent(roles);
+            responseModel.setContents(roles.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) roles.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());

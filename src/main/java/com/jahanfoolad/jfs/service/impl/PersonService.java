@@ -65,11 +65,13 @@ public class PersonService<P extends Person> implements UserDetailsService {
     private MessageSource faMessageSource;
 
     public P save(P person) throws Exception {
-        String password = getPassword();
-        person.setPassword(password);
+        generatedPassword = passwordGenerator();
+        Person clonePerson = (Person) person.clone();
+        clonePerson.setPassword(generatedPassword);
+        person.setPassword(getPassword(generatedPassword));
         P savedPerson = personRepository.save(person);
-        passwordSendFactory.send(savedPerson, RegisterType.PHONE);
-        return person;
+        passwordSendFactory.send(clonePerson, RegisterType.PHONE);
+        return savedPerson;
     }
 
 
@@ -135,9 +137,9 @@ public class PersonService<P extends Person> implements UserDetailsService {
         return String.format("%06d", new Random().nextInt(1000000));
     }
 
-    private String getPassword() {
-        generatedPassword = passwordGenerator();
-        System.out.println(" gen pass " + generatedPassword + " enc " + EncyDecyECB.encrypt(generatedPassword));
+    private String getPassword(String pass) {
+
+        System.out.println(" gen pass " + generatedPassword + " enc " + EncyDecyECB.encrypt(pass));
         return JfsApplication.bCryptPasswordEncoder.encode(generatedPassword);
     }
 
@@ -193,4 +195,6 @@ public class PersonService<P extends Person> implements UserDetailsService {
     public List<Person> findByRole(Role role) {
         return personRepository.findAllByRole(role);
     }
+
+
 }

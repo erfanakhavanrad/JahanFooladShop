@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -54,8 +55,11 @@ public class FileServiceImpl implements FileService {
     static String BASE_IMAGE_DIRECTORY = BASE_DIRECTORY + "images/";
     static String USER_PROFILE_DB = "/images/profiles/";
 
-    int fail = 0;
-    int success = 1;
+    @Value("${SUCCESS_RESULT}")
+    int success;
+
+    @Value("${FAIL_RESULT}")
+    int fail;
 
     @Override
     public Page<File> getFiles(Integer pageNo, Integer perPage) {
@@ -67,10 +71,10 @@ public class FileServiceImpl implements FileService {
         return fileRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
     }
 
-//    @PreAuthorize("hasPermission(#id,'FILE', 'WRITE')")
+    //    @PreAuthorize("hasPermission(#id,'FILE', 'WRITE')")
     @Override
     public ResponseModel createFile(MultipartFile file, String title, HttpServletRequest request) {
-        return copyFile(BASE_DIRECTORY, file, title , request);
+        return copyFile(BASE_DIRECTORY, file, title, request);
     }
 
 
@@ -85,10 +89,10 @@ public class FileServiceImpl implements FileService {
         return fileRepository.save(updated);
     }
 
-//    @PreAuthorize("hasPermission(#id,'FILE', 'WRITE')")
+    //    @PreAuthorize("hasPermission(#id,'FILE', 'WRITE')")
     public ResponseModel save(MultipartFile files, String title) {
         responseModel.clear();
-        return copyFile(BASE_DIRECTORY, files, title , null);
+        return copyFile(BASE_DIRECTORY, files, title, null);
     }
 
     @PreAuthorize("hasPermission(#id,'FILE', 'DELETE')")
@@ -98,7 +102,7 @@ public class FileServiceImpl implements FileService {
         try {
 
             File file = fileRepository.findById(fileId).orElseThrow(
-                    () -> new CustomException(faMessageSource.getMessage("", null, Locale.ENGLISH)));// file not found
+                    () -> new CustomException(faMessageSource.getMessage("FILE_NOT_FOUND", null, Locale.ENGLISH)));// file not found
             remove(file);
             String BASE_FOLDER = BASE_DIRECTORY;
             ProcessBuilder builder = new ProcessBuilder();
@@ -112,7 +116,7 @@ public class FileServiceImpl implements FileService {
             responseModel.setResult(success);
             return responseModel;
         } catch (DataIntegrityViolationException constraintViolationException) {
-            responseModel.setError(faMessageSource.getMessage("", null, Locale.ENGLISH)); //file could not delete assign to some properties
+            responseModel.setError(faMessageSource.getMessage("FILE_NOT_DELETE_INTEGRATION", null, Locale.ENGLISH)); //file could not delete assign to some properties
             responseModel.setResult(fail);
             return responseModel;
         } catch (Exception e) {
@@ -124,20 +128,20 @@ public class FileServiceImpl implements FileService {
 
     }
 
-    public ResponseModel copyFile(String uploadFolder, MultipartFile file, String title , HttpServletRequest request) {
+    public ResponseModel copyFile(String uploadFolder, MultipartFile file, String title, HttpServletRequest request) {
         responseModel.clear();
         try {
             String extension = file.getContentType().substring(file.getContentType().indexOf("/") + 1, file.getContentType().length());
             if (extension.equalsIgnoreCase("mpg") && extension.equalsIgnoreCase("mp3"))
-                throw new Exception(faMessageSource.getMessage("", null, Locale.ENGLISH));//فرمت فایل نادرست است
-            responseModel.setContent(writeFile(file, uploadFolder, extension, title , request));
+                throw new Exception(faMessageSource.getMessage("FILE_WRONG_FORMAT", null, Locale.ENGLISH));//فرمت فایل نادرست است
+            responseModel.setContent(writeFile(file, uploadFolder, extension, title, request));
             responseModel.setResult(success);
 
         } catch (IOException e) {
             e.printStackTrace();
             responseModel.setResult(fail);
             responseModel.setSystemError(e.toString());
-            responseModel.setError(faMessageSource.getMessage("", null, Locale.ENGLISH));//خطا در بارگذاری فایل !
+            responseModel.setError(faMessageSource.getMessage("FILE_UPLOAD_FAILED", null, Locale.ENGLISH));//خطا در بارگذاری فایل !
         } catch (EntityNotFoundException entityNotFoundException) {
             responseModel.setResult(fail);
             responseModel.setSystemError(entityNotFoundException.toString());
@@ -145,7 +149,7 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             responseModel.setResult(fail);
             responseModel.setSystemError(e.toString());
-            responseModel.setError(faMessageSource.getMessage("", null, Locale.ENGLISH));// unknown error
+            responseModel.setError(faMessageSource.getMessage("FILE_UNKNOWN_ERROR", null, Locale.ENGLISH));// unknown error
         }
         return responseModel;
     }
@@ -158,7 +162,7 @@ public class FileServiceImpl implements FileService {
         Path path = Paths.get(uploadFolder + fileName + "." + extension);
         log.info("size of file in byte  " + bytes.length + " file address : " + path);
         java.nio.file.Files.write(path, bytes);
-        return saveFileToDb(createFilesFromMultipart(title, fileName, extension , request));
+        return saveFileToDb(createFilesFromMultipart(title, fileName, extension, request));
     }
 
     private File createFilesFromMultipart(String title, Long fileName, String extension, HttpServletRequest request) throws Exception {

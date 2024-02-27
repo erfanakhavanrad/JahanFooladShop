@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(name = "person")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="user_type",discriminatorType = DiscriminatorType.STRING)
-public class Person extends AbstractEntity{
+public class Person extends AbstractEntity implements Cloneable{
 
     @Column(unique = true)
     private String userName;
@@ -57,4 +57,9 @@ public class Person extends AbstractEntity{
             inverseJoinColumns =
             @JoinColumn(name = "person_id", referencedColumnName = "id"))
     private List<Role> role;
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

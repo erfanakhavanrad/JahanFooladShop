@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="File")
+@Table(name = "File")
 @Getter
 @Setter
-public class File extends AbstractEntity{
+public class File extends AbstractEntity {
 
     @Column
     private String title;

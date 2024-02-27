@@ -70,7 +70,7 @@ public class CorpPersonController {
             log.info("get all corp people");
             responseModel.clear();
             Page<CorpPerson> corpPeople = corpPersonService.getCorpPeople(pageNo, perPage);
-            responseModel.setContent(corpPeople);
+            responseModel.setContents(corpPeople.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) corpPeople.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -116,7 +116,7 @@ public class CorpPersonController {
             log.info("get corp people By contact");
             responseModel.clear();
             Page<CorpPerson> corpPeople = corpPersonService.findByContact(contactDto, pageNo, perPage);
-            responseModel.setContent(corpPeople);
+            responseModel.setContents(corpPeople.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) corpPeople.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());

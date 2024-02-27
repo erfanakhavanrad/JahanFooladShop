@@ -45,7 +45,7 @@ public class PrivilegeController {
             log.info("getAll Privilege");
             responseModel.clear();
             Page<Privilege> privileges = privilegeService.getPrivileges(pageNo, perPage);
-            responseModel.setContent(privileges);
+            responseModel.setContents(privileges.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) privileges.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());

@@ -69,11 +69,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                 .requestMatchers(HttpMethod.POST, "/realperson/save").permitAll()
                 .requestMatchers(HttpMethod.POST, "/realperson/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/realperson/getAll").permitAll() //Remember to remove
                 .requestMatchers(HttpMethod.GET, "/user/forgetPass").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/support").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/getToken").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user/getAll").authenticated()
+                .requestMatchers(HttpMethod.GET, "/user/getAll").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/getById").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user/activation").authenticated()
 
