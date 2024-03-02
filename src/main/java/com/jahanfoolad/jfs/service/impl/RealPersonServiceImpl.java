@@ -1,10 +1,12 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
 import jakarta.annotation.Resource;
@@ -36,6 +38,9 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Autowired
     PersonService<RealPerson> personService;
 
+    @Autowired
+    SecurityService securityService;
+
     @Override
     public Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) {
         return realPersonRepository.findAll(JfsApplication.createPagination(perPage, pageNo));
@@ -46,7 +51,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Override
     public RealPerson getRealPersonById(Long id) throws Exception {
 //        realUserRepository.findById(id).get();
-        return realPersonRepository.findById(id).orElseThrow(() -> new Exception("User not found."));
+        return realPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("REAL_PERSON_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
 
@@ -55,7 +60,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
         if (byUserName != null) {
             return byUserName;
-        } else throw new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH));
+        } else throw new Exception(faMessageSource.getMessage("REAL_PERSON_NOT_FOUND", null, Locale.ENGLISH));
     }
 
 
@@ -66,9 +71,8 @@ public class RealPersonServiceImpl implements RealPersonService {
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
         realPerson.setPassword(generatePassword(realPerson));
         realPerson.setUserName(realPerson.getCellPhone());
+        realPerson.setCreatedBy((((Person) securityService.getUserByToken(request).getContent()).getId()));
         return personService.save(realPerson);
-//        RealPerson save = realPersonRepository.save(realPerson);
-//        smsService.sendPasswordSms(realPersonDto.getCellPhone(), realPerson.getPassword());
     }
 
     @Override
@@ -102,10 +106,10 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public ResponseModel login(RealPerson realPerson, HttpServletRequest request){
+    public ResponseModel login(RealPerson realPerson, HttpServletRequest request) {
         try {
             return personService.login(realPerson, request);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseModel.setResult(personService.fail);
             responseModel.setError(e.getMessage());
             responseModel.setError(e.toString());

@@ -1,10 +1,12 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.Role;
 import com.jahanfoolad.jfs.domain.dto.RoleDto;
 import com.jahanfoolad.jfs.jpaRepository.RoleRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.RoleService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +16,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -29,6 +30,9 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    SecurityService securityService;
+
     @Override
     public Page<Role> getRoles(Integer pageNo, Integer perPage) {
         return roleRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
@@ -36,14 +40,15 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role getRoleById(Long id) throws Exception {
-        return roleRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return roleRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("ROLE_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
     public Role createRole(RoleDto roleDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Role role = modelMapper.map(roleDto, Role.class);
-        return modelMapper.map(roleRepository.save(role), Role.class);
+        role.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
+        return roleRepository.save(role);
     }
 
     @Override

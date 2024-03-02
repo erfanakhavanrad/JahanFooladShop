@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +39,14 @@ public class CorpPersonServiceImpl implements CorpPersonService {
 
     @Override
     public CorpPerson getCorpPersonById(Long id) throws Exception {
-        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("CORP_PERSON_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
     public CorpPerson createCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         CorpPerson corpPerson = modelMapper.map(corpPersonDto, CorpPerson.class);
-        return modelMapper.map(corpPersonRepository.save(corpPerson), CorpPerson.class);
+        return corpPersonRepository.save(corpPerson);
     }
 
     @Override

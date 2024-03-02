@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.Product;
 import com.jahanfoolad.jfs.domain.ProductAttribute;
 import com.jahanfoolad.jfs.domain.ResponseModel;
@@ -10,10 +11,12 @@ import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.CompanyService;
 import com.jahanfoolad.jfs.service.ProductAttributeService;
 import com.jahanfoolad.jfs.service.ProductService;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +54,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     CompanyService companyService;
 
+    @Autowired
+    SecurityService securityService;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -61,16 +67,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Long id) throws Exception {
-        return productRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return productRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("PRODUCT_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
-    public Product createProduct(ProductDto productDto) throws Exception {
+    public Product createProduct(ProductDto productDto, HttpServletRequest httpServletRequest) throws Exception {
         companyService.getCompanyById(productDto.getCompanyId()); // message should change for all not found , ex : company not found
         ModelMapper modelMapper = new ModelMapper();
         Product product = modelMapper.map(productDto, Product.class);
         List<ProductAttribute> savedProductAttributes = productAttributeService.createProductAttributes(product.getProductAttributeList());
         product.setProductAttributeList(savedProductAttributes);
+        product.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
         return productRepository.save(product);
     }
 

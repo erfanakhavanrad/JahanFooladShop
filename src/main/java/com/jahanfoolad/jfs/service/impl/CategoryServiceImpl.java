@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) throws Exception {
-        return categoryRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return categoryRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("CATEGORY_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         ModelMapper modelMapper = new ModelMapper();
         Category category = modelMapper.map(categoryDto, Category.class);
         category.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
-        return modelMapper.map(categoryRepository.save(category), Category.class);
+        return categoryRepository.save(category);
     }
 
     @Override

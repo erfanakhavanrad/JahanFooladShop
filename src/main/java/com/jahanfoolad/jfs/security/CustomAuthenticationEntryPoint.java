@@ -34,7 +34,7 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
         // 401
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().println(getErrorModel(response.getStatus(), faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH), authException.getMessage()));
@@ -45,7 +45,7 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AccessDeniedException accessDeniedException) throws IOException {
         // 403
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.getWriter().println(getErrorModel(response.getStatus(),
@@ -56,7 +56,7 @@ class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint, Serial
     @ExceptionHandler(value = {Exception.class})
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          Exception exception) throws IOException {
-        response.setContentType("application/json;charset=UTF-8");
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         response.getWriter().println(getErrorModel(response.getStatus(),

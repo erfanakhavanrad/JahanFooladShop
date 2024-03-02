@@ -88,7 +88,7 @@ public class ProductController {
         try {
             log.info("create product");
             responseModel.clear();
-            responseModel.setContent(productService.createProduct(productDto)); // status not set in some request
+            responseModel.setContent(productService.createProduct(productDto, httpServletRequest)); // status not set in some request
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());

@@ -1,12 +1,14 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.Price;
 import com.jahanfoolad.jfs.domain.ProductAttribute;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.ProductAttributeDto;
 import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.ProductAttributeService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +33,9 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    SecurityService securityService;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -42,14 +47,15 @@ public class ProductAttributeServiceImpl implements ProductAttributeService {
 
     @Override
     public ProductAttribute getProductAttributeById(Long id) throws Exception {
-        return productAttributeRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return productAttributeRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("PRODUCT_ATTRIBUTE_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
     public ProductAttribute createProductAttribute(ProductAttributeDto productAttributeDto, HttpServletRequest httpServletRequest) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         ProductAttribute productAttribute = modelMapper.map(productAttributeDto, ProductAttribute.class);
-        return modelMapper.map(productAttributeRepository.save(productAttribute), ProductAttribute.class);
+        productAttribute.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
+        return productAttributeRepository.save(productAttribute);
     }
 
     @Override

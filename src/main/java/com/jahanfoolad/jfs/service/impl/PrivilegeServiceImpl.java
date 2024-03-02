@@ -1,10 +1,12 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
+import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.domain.Privilege;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.PrivilegeDto;
 import com.jahanfoolad.jfs.jpaRepository.PrivilegeRepository;
+import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.PrivilegeService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +16,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -29,6 +30,9 @@ public class PrivilegeServiceImpl implements PrivilegeService {
     @Autowired
     ResponseModel responseModel;
 
+    @Autowired
+    private SecurityService securityService;
+
     @Override
     public Page<Privilege> getPrivileges(Integer pageNo, Integer perPage) {
         return privilegeRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
@@ -36,14 +40,15 @@ public class PrivilegeServiceImpl implements PrivilegeService {
 
     @Override
     public Privilege getPrivilegeById(Long id) throws Exception {
-        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("NOT_FOUND", null, Locale.ENGLISH)));
+        return privilegeRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("PRIVILEGE_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
     @Override
     public Privilege createPrivilege(PrivilegeDto privilegeDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Privilege privilege = modelMapper.map(privilegeDto, Privilege.class);
-        return modelMapper.map(privilegeRepository.save(privilege), Privilege.class);
+        privilege.setCreatedBy((((Person) securityService.getUserByToken(httpServletRequest).getContent()).getId()));
+        return privilegeRepository.save(privilege);
     }
 
     @Override
