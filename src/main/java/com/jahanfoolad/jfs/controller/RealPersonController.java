@@ -2,7 +2,7 @@ package com.jahanfoolad.jfs.controller;
 
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
-import com.jahanfoolad.jfs.domain.dto.LoginDto;
+import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
@@ -156,6 +156,51 @@ public class RealPersonController {
             responseModel.setError(e.getMessage());
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
+        }
+        return responseModel;
+    }
+
+    @GetMapping("/findByProvince")
+    public ResponseModel findByProvince(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        try {
+            responseModel.clear();
+            Page<RealPerson> realPeople = realPersonService.findByProvince(contactDto, pageNo, perPage);
+            responseModel.setContents(realPeople.getContent());
+            responseModel.setResult(success);
+            responseModel.setRecordCount((int) realPeople.getTotalElements());
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        }
+        return responseModel;
+    }
+
+    @GetMapping("/findByCity")
+    public ResponseModel findByCity(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        responseModel.clear();
+        try {
+            log.info("find by city");
+            Page<RealPerson> realPeople = realPersonService.findByCity(contactDto, pageNo, perPage);
+            responseModel.setContents(realPeople.getContent());
+            responseModel.setResult(success);
+            responseModel.setRecordCount((int) realPeople.getTotalElements());
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("ALREADY_NOT_EXISTS", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
         return responseModel;
     }

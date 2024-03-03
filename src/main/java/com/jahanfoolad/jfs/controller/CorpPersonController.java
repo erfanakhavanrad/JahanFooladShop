@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -87,7 +86,6 @@ public class CorpPersonController {
         return responseModel;
     }
 
-
     @GetMapping(path = "/getById")
     public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
@@ -129,6 +127,51 @@ public class CorpPersonController {
             responseModel.setResult(fail);
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setError(e.getMessage());
+        }
+        return responseModel;
+    }
+
+    @GetMapping("/findByProvince")
+    public ResponseModel findByProvince(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        try {
+            responseModel.clear();
+            Page<CorpPerson> corpPeople = corpPersonService.findByProvince(contactDto, pageNo, perPage);
+            responseModel.setContents(corpPeople.getContent());
+            responseModel.setResult(success);
+            responseModel.setRecordCount((int) corpPeople.getTotalElements());
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        }
+        return responseModel;
+    }
+
+    @GetMapping("/findByCity")
+    public ResponseModel findByCity(ContactDto contactDto, @RequestParam Integer pageNo, Integer perPage, HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
+        responseModel.clear();
+        try {
+            log.info("find by city");
+            Page<CorpPerson> corpPeople = corpPersonService.findByCity(contactDto, pageNo, perPage);
+            responseModel.setContents(corpPeople.getContent());
+            responseModel.setResult(success);
+            responseModel.setRecordCount((int) corpPeople.getTotalElements());
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(faMessageSource.getMessage("ALREADY_NOT_EXISTS", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
+            responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
         return responseModel;
     }

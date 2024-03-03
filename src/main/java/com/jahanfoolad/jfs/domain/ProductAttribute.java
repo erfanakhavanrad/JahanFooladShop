@@ -55,9 +55,9 @@ public class ProductAttribute extends AbstractEntity {
     @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.EAGER)
     private List<Price> prices;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
+//    @ManyToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "product_id")
+//    private Product product;
 //
 //    @Column
 //    private Long productId;

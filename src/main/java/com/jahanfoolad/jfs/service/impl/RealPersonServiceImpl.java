@@ -1,10 +1,10 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
-import com.jahanfoolad.jfs.domain.Person;
-import com.jahanfoolad.jfs.domain.RealPerson;
-import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.*;
+import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
+import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.RealPersonService;
@@ -27,6 +27,9 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Autowired
     RealPersonRepository realPersonRepository;
+
+    @Autowired
+    ContactRepository contactRepository;
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
@@ -63,6 +66,18 @@ public class RealPersonServiceImpl implements RealPersonService {
         } else throw new Exception(faMessageSource.getMessage("REAL_PERSON_NOT_FOUND", null, Locale.ENGLISH));
     }
 
+    @Override
+    public Page<RealPerson> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        List<Contact> contacts =  contactRepository.findAllByProvince(contactDto.getProvince());
+        return realPersonRepository.findAllByContactListIn(contacts , JfsApplication.createPagination(pageNo , perPage));
+    }
+
+    @Override
+    public Page<RealPerson> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        List<Contact> contacts = contactRepository.findAllByCity(contactDto.getCity());
+        return realPersonRepository.findAllByContactListIn(contacts ,JfsApplication.createPagination(pageNo , perPage));
+    }
+
 
     // Can throw exception in Header
     @Override
@@ -71,7 +86,7 @@ public class RealPersonServiceImpl implements RealPersonService {
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
         realPerson.setPassword(generatePassword(realPerson));
         realPerson.setUserName(realPerson.getCellPhone());
-        realPerson.setCreatedBy((((Person) securityService.getUserByToken(request).getContent()).getId()));
+//        realPerson.setCreatedBy((((Person) securityService.getUserByToken(request).getContent()).getId()));
         return personService.save(realPerson);
     }
 

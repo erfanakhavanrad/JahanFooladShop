@@ -6,6 +6,7 @@ import com.jahanfoolad.jfs.domain.CorpPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
+import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
 import com.jahanfoolad.jfs.jpaRepository.CorpPersonRepository;
 import com.jahanfoolad.jfs.service.CorpPersonService;
 import jakarta.annotation.Resource;
@@ -26,6 +27,9 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     @Autowired
     CorpPersonRepository corpPersonRepository;
 
+    @Autowired
+    ContactRepository contactRepository;
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -41,6 +45,19 @@ public class CorpPersonServiceImpl implements CorpPersonService {
     public CorpPerson getCorpPersonById(Long id) throws Exception {
         return corpPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("CORP_PERSON_NOT_FOUND", null, Locale.ENGLISH)));
     }
+
+    @Override
+    public Page<CorpPerson> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        List<Contact> contacts = contactRepository.findAllByProvince(contactDto.getProvince());
+        return corpPersonRepository.findAllByContactListIn(contacts, JfsApplication.createPagination(pageNo, perPage));
+    }
+
+    @Override
+    public Page<CorpPerson> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage) {
+        List<Contact> contacts = contactRepository.findAllByCity(contactDto.getCity());
+        return corpPersonRepository.findAllByContactListIn(contacts, JfsApplication.createPagination(pageNo, perPage));
+    }
+
 
     @Override
     public CorpPerson createCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) {

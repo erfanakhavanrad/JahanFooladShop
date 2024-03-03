@@ -2,11 +2,10 @@ package com.jahanfoolad.jfs.service;
 
 import com.jahanfoolad.jfs.domain.RealPerson;
 import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface RealPersonService {
     Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) throws Exception;
@@ -14,6 +13,10 @@ public interface RealPersonService {
     RealPerson getRealPersonById(Long id) throws Exception;
 
     RealPerson getRealPersonByUsername(String userName) throws Exception;
+
+    Page<RealPerson> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) throws Exception;
+
+    Page<RealPerson> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage);
 
     RealPerson createRealPerson(RealPersonDto realPersonDto, HttpServletRequest request) throws Exception;
 

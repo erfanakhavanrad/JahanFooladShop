@@ -29,5 +29,5 @@ public class ProductAttributeDto implements Serializable {
     private String condition;
     private String deliveryPlace;
     private List<Price> priceList;
-    private Product productList;
+//    private Product productList;
 }

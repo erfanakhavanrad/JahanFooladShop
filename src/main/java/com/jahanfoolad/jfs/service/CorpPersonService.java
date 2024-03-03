@@ -5,14 +5,15 @@ import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.CorpPersonDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 public interface CorpPersonService {
     Page<CorpPerson> getCorpPeople(Integer pageNo, Integer perPage) throws Exception;
 
     CorpPerson getCorpPersonById(Long id) throws Exception;
+
+    Page<CorpPerson> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) throws Exception;
+
+    Page<CorpPerson> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage);
 
     CorpPerson createCorpPerson(CorpPersonDto corpPersonDto, HttpServletRequest httpServletRequest) throws Exception;
 
