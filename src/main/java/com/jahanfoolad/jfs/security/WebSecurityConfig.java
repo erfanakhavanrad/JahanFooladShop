@@ -64,6 +64,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.POST, "/product/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/file/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/company/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/company/getAll").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/product/update").permitAll()
                 .requestMatchers(HttpMethod.GET, "/category/*").permitAll()
 

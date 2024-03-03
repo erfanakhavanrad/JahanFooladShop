@@ -26,7 +26,7 @@ public class CompanyDto implements Serializable {
     private String email;
     private Boolean verified;
     private Boolean isActive;
-    private List<ContactDto> contactDtoList;
+    private List<ContactDto> contactList;
 //    private List<Role> roleList;
 
 }

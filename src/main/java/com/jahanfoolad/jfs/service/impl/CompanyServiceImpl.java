@@ -64,7 +64,7 @@ public class CompanyServiceImpl  implements CompanyService {
     public Company createCompany(CompanyDto companyDto, HttpServletRequest httpServletRequest) {
         ModelMapper  modelMapper = new ModelMapper();
         Company company = modelMapper.map(companyDto,Company.class);
-        return modelMapper.map(companyRepository.save(company) , Company.class);
+        return companyRepository.save(company);
     }
 
     @Override

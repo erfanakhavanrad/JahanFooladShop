@@ -176,7 +176,7 @@ public class CompanyController {
         try {
             responseModel.clear();
             Page<Company> companies = companyService.findByProvince(contactDto, pageNo, perPage);
-            responseModel.setContent(companies);
+            responseModel.setContents(companies.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
@@ -199,7 +199,7 @@ public class CompanyController {
         try {
             log.info("find by city");
             Page<Company> companies = companyService.findByCity(contactDto, pageNo, perPage);
-            responseModel.setContent(companies);
+            responseModel.setContents(companies.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) companies.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());

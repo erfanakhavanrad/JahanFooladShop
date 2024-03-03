@@ -46,7 +46,7 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) {
-        return realPersonRepository.findAll(JfsApplication.createPagination(perPage, pageNo));
+        return realPersonRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
 
 //    private String newPassword;
