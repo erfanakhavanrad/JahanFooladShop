@@ -34,6 +34,4 @@ public interface RealPersonService {
 
     void resetPass(RealPerson byMobile, String newPassword) throws Exception;
 
-    String generatePassword(RealPerson realPerson);
-
 }

@@ -17,10 +17,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class RealPersonServiceImpl implements RealPersonService {
@@ -84,7 +81,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     public RealPerson createRealPerson(RealPersonDto realPersonDto, HttpServletRequest request) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        realPerson.setPassword(generatePassword(realPerson));
+        realPerson.setPassword(generatePassword());
         realPerson.setUserName(realPerson.getCellPhone());
 //        realPerson.setCreatedBy((((Person) securityService.getUserByToken(request).getContent()).getId()));
         return personService.save(realPerson);
@@ -92,12 +89,11 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public RealPerson updateRealPerson(RealPersonDto realPersonDto, HttpServletRequest httpServletRequest) throws Exception {
+        responseModel.clear();
         ModelMapper modelMapper = new ModelMapper();
 
         RealPerson oldRealPerson = getRealPersonById(realPersonDto.getId());
         RealPerson newRealPerson = modelMapper.map(realPersonDto, RealPerson.class);
-
-        responseModel.clear();
         RealPerson updated = (RealPerson) responseModel.merge(oldRealPerson, newRealPerson);
 
         if (newRealPerson.getContactList() != null && !newRealPerson.getContactList().isEmpty()) {
@@ -146,8 +142,8 @@ public class RealPersonServiceImpl implements RealPersonService {
     @Override
     public void resetPass(String userName) throws Exception {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
-        byUserName.setConfirmationCode(generatePassword(byUserName));
-        smsService.sendPasswordSms(byUserName.getCellPhone(), "Code: " + byUserName.getConfirmationCode());
+        byUserName.setConfirmationCode(generatePassword());
+        smsService.sendPasswordSms(byUserName.getCellPhone(),  byUserName.getConfirmationCode());
         realPersonRepository.save(byUserName);
     }
 
@@ -161,19 +157,22 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
 
-    public String generatePassword(RealPerson realPerson) {
-        List<Character> characters = new ArrayList<>();
-        String lastFourCharacters = realPerson.getCellPhone().substring(realPerson.getCellPhone().length() - 4);
-        for (char c : lastFourCharacters.toCharArray()) {
-            characters.add(c);
-        }
-        StringBuilder output = new StringBuilder(lastFourCharacters.length());
-        while (characters.size() != 0) {
-            int randPicker = (int) (Math.random() * characters.size());
-            output.append(characters.remove(randPicker));
-        }
-        return output.toString();
+     String generatePassword() {
+        return String.format("%06d", new Random().nextInt(1000000));
     }
+//        public String generatePassword(RealPerson realPerson) {
+//        List<Character> characters = new ArrayList<>();
+//        String lastFourCharacters = realPerson.getCellPhone().substring(realPerson.getCellPhone().length() - 4);
+//        for (char c : lastFourCharacters.toCharArray()) {
+//            characters.add(c);
+//        }
+//        StringBuilder output = new StringBuilder(lastFourCharacters.length());
+//        while (characters.size() != 0) {
+//            int randPicker = (int) (Math.random() * characters.size());
+//            output.append(characters.remove(randPicker));
+//        }
+//        return output.toString();
+//    }
 
 
 }

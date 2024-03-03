@@ -13,7 +13,6 @@ public class CorpPersonDto implements Serializable {
     @Serial
     private static final long serialVersionUID = -5811526900658221527L;
     private Long id;
-    private String name;
     private String nationalId;
     private String economicCode;
     private String agentName;
@@ -22,5 +21,6 @@ public class CorpPersonDto implements Serializable {
     private Boolean verified = false;
     private Boolean isActive  = true;
     private List<ContactDto> contactList;
+
 
 }

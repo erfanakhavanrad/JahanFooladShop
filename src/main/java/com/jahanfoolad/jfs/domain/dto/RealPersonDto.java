@@ -24,7 +24,7 @@ public class RealPersonDto implements Serializable {
     private Boolean isActive  = true;
 //    private String password;
 //    private String encryptedPassword;
-    private List<ContactDto> contactDtoList;
+    private List<ContactDto> contactList;
 
 
     /*
