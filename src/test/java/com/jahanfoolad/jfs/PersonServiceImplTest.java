@@ -20,7 +20,7 @@ public class PersonServiceImplTest {
 
     @Test
     public void passwordGenerator() {
-        String s = realPersonService.generatePassword(realPerson);
+         realPersonService.generatePassword();
     }
 
 }

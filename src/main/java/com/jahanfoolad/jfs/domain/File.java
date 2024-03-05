@@ -22,9 +22,9 @@ public class File extends AbstractEntity {
     @Column
     private String url;
     @Column
-    private boolean isMain = false;
+    private Boolean isMain = false;
     @Column
     @NotNull
-    private long companyId;
+    private Long companyId;
 
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class CategoryDto {
     private Long id;
+    private Long parentId;
     private String name;
     private File thumbnail;
 }

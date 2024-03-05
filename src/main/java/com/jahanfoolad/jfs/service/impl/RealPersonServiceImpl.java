@@ -157,7 +157,7 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
 
-     String generatePassword() {
+     public String generatePassword() {
         return String.format("%06d", new Random().nextInt(1000000));
     }
 //        public String generatePassword(RealPerson realPerson) {
