@@ -18,5 +18,7 @@ public class FileDto implements Serializable {
     private String extension;
     private String title;
     private String url;
+    private boolean isMain = false;
+    private long companyId;
 
 }

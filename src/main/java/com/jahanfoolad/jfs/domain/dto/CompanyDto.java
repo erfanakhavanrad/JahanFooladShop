@@ -1,7 +1,5 @@
 package com.jahanfoolad.jfs.domain.dto;
 
-import com.jahanfoolad.jfs.domain.Contact;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +25,9 @@ public class CompanyDto implements Serializable {
     private Boolean verified;
     private Boolean isActive;
     private List<ContactDto> contactList;
+    private List<FileDto> fileList;
+    private List<ProductDto> productList;
+    private List<CorpPersonDto> corpPersonList;
 //    private List<Role> roleList;
 
 }

@@ -3,6 +3,7 @@ package com.jahanfoolad.jfs.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,9 @@ public class File extends AbstractEntity {
     @Column
     private String url;
     @Column
-    boolean isMain = false;
+    private boolean isMain = false;
+    @Column
+    @NotNull
+    private long companyId;
 
 }
