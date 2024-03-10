@@ -99,7 +99,6 @@ public class RealPersonServiceImpl implements RealPersonService {
         if (newRealPerson.getContactList() != null && !newRealPerson.getContactList().isEmpty()) {
             updated.setContactList(newRealPerson.getContactList());
         }
-
         return realPersonRepository.save(updated);
     }
 

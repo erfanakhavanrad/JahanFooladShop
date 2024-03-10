@@ -1,10 +1,9 @@
 package com.jahanfoolad.jfs.controller;
 
-import com.jahanfoolad.jfs.domain.Product;
+import com.jahanfoolad.jfs.domain.Price;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.PriceDto;
-import com.jahanfoolad.jfs.domain.dto.ProductDto;
-import com.jahanfoolad.jfs.service.ProductService;
+import com.jahanfoolad.jfs.service.PriceService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,18 +16,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
-@RequestMapping("/product")
 @RestController
-public class ProductController {
-    @Autowired
-    ProductService productService;
+@RequestMapping("/price")
+public class PriceController {
 
     @Autowired
     ResponseModel responseModel;
+
+    @Autowired
+    PriceService priceService;
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
@@ -40,15 +39,14 @@ public class ProductController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
-            log.info("get product");
             responseModel.clear();
-            Page<Product> products = productService.getProducts(pageNo,perPage);
-            responseModel.setContents(products.getContent());
+            log.info("get all category");
+            Page<Price> prices = priceService.getPrices(pageNo,perPage);
+            responseModel.setContents(prices.getContent());
             responseModel.setResult(success);
-            responseModel.setRecordCount((int) products.getTotalElements());
+            responseModel.setRecordCount((int) prices.getTotalElements());
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
@@ -57,115 +55,106 @@ public class ProductController {
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
-
         return responseModel;
     }
 
-    @GetMapping("/getById")
+
+    @GetMapping(path = "/getById")
     public ResponseModel getById(@RequestParam Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-
         try {
+            log.info("get category ById");
             responseModel.clear();
-            log.info("get product by id");
-            responseModel.setContent(productService.getProductById(id));
+            responseModel.setContent(priceService.getPriceById(id));
+            responseModel.setRecordCount(1);
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
+            responseModel.setStatus(httpServletResponse.getStatus());
+            responseModel.setResult(fail);
         }
-
         return responseModel;
     }
 
-    @PostMapping("/save")
-    public ResponseModel save(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
+    @PostMapping(path = "/save")
+    public ResponseModel save(@RequestBody PriceDto priceDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
-            log.info("create product");
+            log.info("create category");
             responseModel.clear();
-            responseModel.setContent(productService.createProduct(productDto, httpServletRequest)); // status not set in some request
+            responseModel.setContent(priceService.createPrice(priceDto, httpServletRequest));
             responseModel.setResult(success);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setResult(fail);
+            responseModel.setSystemError(accessDeniedException.getMessage());
+            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setError(dataIntegrityViolationException.getMessage());
             responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            responseModel.setStatus(httpServletResponse.getStatus());
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
-
         return responseModel;
     }
 
-    @PutMapping("/update")
-    public ResponseModel update(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
-
-        try{
-            log.info("update product");
-            responseModel.setContent(productService.updateProduct(productDto));
+    @PutMapping(path = "/update")
+    public ResponseModel update(@RequestBody PriceDto priceDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        try {
+            log.info("update category");
+            responseModel.clear();
+            responseModel.setContent(priceService.updatePrice(priceDto, httpServletRequest));
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }catch (Exception e){
+        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
+            responseModel.setError(dataIntegrityViolationException.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setStatus(httpServletResponse.getStatus());
         }
-
-        return  responseModel;
+        return responseModel;
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseModel delete(@PathVariable("id") Long id, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
         try {
+            log.info("delete category");
             responseModel.clear();
-            log.info("delete product");
-            productService.deleteProduct(id);
+            priceService.deletePrice(id);
+            responseModel.clear();
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setStatus(httpServletResponse.getStatus());
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (Exception e) {
             responseModel.setError(e.getMessage());
-        }
-
-        return responseModel;
-    }
-
-    @PostMapping("/addPrice")
-    public ResponseModel addPrice(@RequestBody PriceDto priceDto,Long productId,Long attributeId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-
-        try {
-            log.info("create product");
-            responseModel.clear();
-            responseModel.setContent(productService.addPrice(priceDto,productId,attributeId, httpServletRequest)); // status not set in some request
-            responseModel.setResult(success);
-        } catch (DataIntegrityViolationException dataIntegrityViolationException) {
-            responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
-            responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
+            responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);
-            responseModel.setSystemError(accessDeniedException.getMessage());
-            responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (Exception e) {
-            responseModel.setError(e.getMessage());
         }
-
         return responseModel;
     }
-
 }

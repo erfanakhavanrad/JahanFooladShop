@@ -3,11 +3,10 @@ package com.jahanfoolad.jfs.service;
 import com.jahanfoolad.jfs.domain.Price;
 import com.jahanfoolad.jfs.domain.dto.PriceDto;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface PriceService {
-    List<Price> getPrices() throws Exception;
+    Page<Price> getPrices(Integer pageNo, Integer perPage) throws Exception;
 
     Price getPriceById(Long id) throws Exception;
 

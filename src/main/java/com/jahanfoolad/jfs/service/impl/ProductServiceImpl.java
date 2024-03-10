@@ -1,11 +1,9 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
-import com.jahanfoolad.jfs.domain.Person;
-import com.jahanfoolad.jfs.domain.Product;
-import com.jahanfoolad.jfs.domain.ProductAttribute;
-import com.jahanfoolad.jfs.domain.ResponseModel;
+import com.jahanfoolad.jfs.domain.*;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
+import com.jahanfoolad.jfs.domain.dto.PriceDto;
 import com.jahanfoolad.jfs.domain.dto.ProductDto;
 import com.jahanfoolad.jfs.jpaRepository.CategoryRepository;
 import com.jahanfoolad.jfs.jpaRepository.PriceRepository;
@@ -13,6 +11,7 @@ import com.jahanfoolad.jfs.jpaRepository.ProductAttributeRepository;
 import com.jahanfoolad.jfs.jpaRepository.ProductRepository;
 import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.CompanyService;
+import com.jahanfoolad.jfs.service.PriceService;
 import com.jahanfoolad.jfs.service.ProductAttributeService;
 import com.jahanfoolad.jfs.service.ProductService;
 import jakarta.annotation.Resource;
@@ -56,6 +55,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     SecurityService securityService;
+
+    @Autowired
+    PriceService priceService;
 
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
@@ -112,5 +114,20 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = new ArrayList<>();
         productList.add(product);
         return productRepository.findAllByFilesIn(productList, PageRequest.of(pageNo, perPage));
+    }
+
+    @Override
+    public Product addPrice(PriceDto priceDto, Long productId, Long attributeId, HttpServletRequest httpServletRequest) throws Exception {
+        log.info("add price");
+
+        Product product = getProductById(productId);
+        ProductAttribute productAttribute =productAttributeService.getProductAttributeById(attributeId);
+        productAttribute.setPrices((List<Price>) priceDto);
+        product.setProductAttributeList((List<ProductAttribute>) productAttribute);
+
+        ModelMapper modelMapper= new ModelMapper();
+        Product product1 = modelMapper.map(product, Product.class);
+//        createProduct(product1,httpServletRequest);
+        return null;
     }
 }

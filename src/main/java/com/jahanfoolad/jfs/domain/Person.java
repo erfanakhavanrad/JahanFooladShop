@@ -3,6 +3,7 @@ package com.jahanfoolad.jfs.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class Person extends AbstractEntity implements Cloneable{
     private boolean isActive = true;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    private List<Contact> contactList;
+    private List<Contact> contactList = new ArrayList<>();
 
     @Column
     Date lastLoginDate;

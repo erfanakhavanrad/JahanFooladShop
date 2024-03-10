@@ -12,6 +12,8 @@ import java.util.Date;
 public class PriceDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 8652231045388150017L;
+
+    private Long id;
     private String price;
     private Date lastPriceUpdate;
 }
