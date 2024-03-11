@@ -26,7 +26,9 @@ public class ResponseModel <T>{
             Object merged = localClass.newInstance();
             Field[] declaredFields = localClass.getDeclaredFields();
             Field[] superClassFields = localClass.getSuperclass().getDeclaredFields();
-            Field[] allFields = Stream.concat(Arrays.stream(declaredFields) , Arrays.stream(superClassFields)).toArray(Field[]::new);
+            Field[] abstractSuperClassFields  = localClass.getSuperclass().getSuperclass().getDeclaredFields();
+            Field[] fields = Stream.concat(Arrays.stream(declaredFields) , Arrays.stream(superClassFields)).toArray(Field[]::new);
+            Field[] allFields = Stream.concat(Arrays.stream(fields) , Arrays.stream(abstractSuperClassFields)).toArray(Field[]::new);
             for (Field field : allFields) {
                 field.setAccessible(true);
                 Object localValue = field.get(local);

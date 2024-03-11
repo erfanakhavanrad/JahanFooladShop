@@ -5,6 +5,7 @@ import com.jahanfoolad.jfs.domain.*;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
+import com.jahanfoolad.jfs.jpaRepository.PersonRepository;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.RealPersonService;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -42,11 +44,10 @@ public class RealPersonServiceImpl implements RealPersonService {
     SecurityService securityService;
 
     @Override
+    @PreAuthorize("hasPermission(#id,'USER', 'READ')")
     public Page<RealPerson> getRealPeople(Integer pageNo, Integer perPage) {
         return realPersonRepository.findAll(JfsApplication.createPagination(pageNo, perPage));
     }
-
-//    private String newPassword;
 
     @Override
     public RealPerson getRealPersonById(Long id) throws Exception {

@@ -54,10 +54,10 @@ public class Person extends AbstractEntity implements Cloneable{
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_person",
             joinColumns =
-            @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            @JoinColumn(name = "person_id", referencedColumnName = "id"),
             inverseJoinColumns =
-            @JoinColumn(name = "person_id", referencedColumnName = "id"))
-    private List<Role> role;
+            @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    public List<Role> role;
 
     @Override
     public Object clone() throws CloneNotSupportedException {

@@ -2,15 +2,19 @@ package com.jahanfoolad.jfs.security;
 
 import com.jahanfoolad.jfs.domain.Person;
 import com.jahanfoolad.jfs.service.impl.PersonService;
+import com.jahanfoolad.jfs.utils.CustomPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,7 +27,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
 
     @Autowired
@@ -32,10 +37,22 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Autowired
     CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    @Autowired
+    CustomPermissionEvaluator customPermissionEvaluator;
+
     @Bean
     public AuthenticationTokenFilter authenticationTokenFilterBean() throws Exception {
         return new AuthenticationTokenFilter();
     }
+
+
+    @Bean
+    public MethodSecurityExpressionHandler expressionHandler() {
+        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        expressionHandler.setPermissionEvaluator(customPermissionEvaluator);
+        return expressionHandler;
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -76,7 +93,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .requestMatchers(HttpMethod.POST, "/user/support").permitAll()
                 .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/user/getToken").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user/getAll").permitAll()
+                .requestMatchers(HttpMethod.GET, "/user/getAll").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user/getById").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user/activation").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/realperson/*").permitAll()

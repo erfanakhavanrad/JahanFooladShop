@@ -42,7 +42,6 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
-//        System.out.println(" auth "+auth+" targetDomainObject "+targetDomainObject+" permission "+permission);
         if ((auth == null) || (targetDomainObject == null) || !(permission instanceof String)) {
             return false;
         }
@@ -54,7 +53,6 @@ public class CustomPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(Authentication auth, Serializable targetId, String targetType, Object permission) {
-//        System.out.println(" auth "+auth+" targetId "+targetId+" permission "+permission +" targetType "+targetType);
         if ((auth == null) || (targetType == null) || !(permission instanceof String)) {
             return false;
         }
