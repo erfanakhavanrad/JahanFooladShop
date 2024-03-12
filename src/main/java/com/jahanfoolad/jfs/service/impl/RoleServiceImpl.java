@@ -44,6 +44,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRoleByName(String name) throws Exception {
+        return roleRepository.findAllByRoleName(name);
+    }
+
+    @Override
     public Role createRole(RoleDto roleDto, HttpServletRequest httpServletRequest) {
         ModelMapper modelMapper = new ModelMapper();
         Role role = modelMapper.map(roleDto, Role.class);
@@ -61,7 +66,7 @@ public class RoleServiceImpl implements RoleService {
         responseModel.clear();
         Role updated = (Role) responseModel.merge(oldRole, newRole);
 
-        if (roleDto.getPrivilege() != null && !roleDto.getPrivilege().isEmpty()) {
+        if (roleDto.getPrivileges() != null && !roleDto.getPrivileges().isEmpty()) {
             updated.setPrivileges(newRole.getPrivileges());
         }
 

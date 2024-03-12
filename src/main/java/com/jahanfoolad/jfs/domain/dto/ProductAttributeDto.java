@@ -1,7 +1,6 @@
 package com.jahanfoolad.jfs.domain.dto;
 
 import com.jahanfoolad.jfs.domain.Price;
-import com.jahanfoolad.jfs.domain.Product;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,6 +14,7 @@ public class ProductAttributeDto implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -1234852588858524421L;
+    private Long id;
     private Double length;
     private Double diameter;
     private Double width;

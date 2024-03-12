@@ -1,6 +1,7 @@
 package com.jahanfoolad.jfs.service;
 
 import com.jahanfoolad.jfs.domain.Product;
+import com.jahanfoolad.jfs.domain.ProductAttribute;
 import com.jahanfoolad.jfs.domain.dto.FileDto;
 import com.jahanfoolad.jfs.domain.dto.PriceDto;
 import com.jahanfoolad.jfs.domain.dto.ProductDto;
@@ -20,5 +21,5 @@ public interface ProductService {
 
     Page<Product> findByFile(FileDto fileDto, Integer pageNo, Integer perPage);
 
-    Product addPrice(PriceDto priceDto, Long productId, Long attributeId , HttpServletRequest httpServletRequest) throws Exception;
+    ProductAttribute addPrice(PriceDto priceDto, Long attributeId, HttpServletRequest httpServletRequest) throws Exception;
 }

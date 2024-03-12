@@ -3,10 +3,8 @@ package com.jahanfoolad.jfs.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.sql.exec.spi.StandardEntityInstanceResolver;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -15,14 +13,14 @@ import java.util.Set;
 public class Role extends AbstractEntity {
 
     @Column(nullable = false)
-    private String roleName;
+    String roleName;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "role_privileges",
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "role_privilege",
             joinColumns =
             @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns =
             @JoinColumn(name = "privilege_id", referencedColumnName = "id"))
-    private List<Privilege> privileges;
+    List<Privilege> privileges;
 }

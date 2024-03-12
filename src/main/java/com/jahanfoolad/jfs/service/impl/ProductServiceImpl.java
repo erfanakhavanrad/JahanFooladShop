@@ -117,17 +117,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product addPrice(PriceDto priceDto, Long productId, Long attributeId, HttpServletRequest httpServletRequest) throws Exception {
+    public ProductAttribute addPrice(PriceDto priceDto, Long attributeId, HttpServletRequest httpServletRequest) throws Exception {
         log.info("add price");
 
-        Product product = getProductById(productId);
-        ProductAttribute productAttribute =productAttributeService.getProductAttributeById(attributeId);
-        productAttribute.setPrices((List<Price>) priceDto);
-        product.setProductAttributeList((List<ProductAttribute>) productAttribute);
+        ModelMapper modelMapper = new ModelMapper();
+        Price price = modelMapper.map(priceDto, Price.class);
+        ProductAttribute productAttribute = productAttributeService.getProductAttributeById(attributeId);
+        productAttribute.getPrices().add(price);
 
-        ModelMapper modelMapper= new ModelMapper();
-        Product product1 = modelMapper.map(product, Product.class);
-//        createProduct(product1,httpServletRequest);
-        return null;
+        return productAttributeRepository.save(productAttribute);
     }
 }

@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -41,11 +40,11 @@ public class RoleController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         try {
             log.info("Get all Roles");
             responseModel.clear();
-            Page<Role> roles = roleService.getRoles(pageNo,perPage);
+            Page<Role> roles = roleService.getRoles(pageNo, perPage);
             responseModel.setContents(roles.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) roles.getTotalElements());
@@ -100,7 +99,8 @@ public class RoleController {
         try {
             log.info("Save Role");
             responseModel.clear();
-            responseModel.setContent(roleService.createRole(roleDto, httpServletRequest));
+            final Role role = roleService.createRole(roleDto, httpServletRequest);
+            responseModel.setContent(role);
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
@@ -109,6 +109,8 @@ public class RoleController {
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+            responseModel.setContents(null);
+            responseModel.setContent(null);
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
             responseModel.setStatus(httpServletResponse.getStatus());
             responseModel.setResult(fail);

@@ -3,7 +3,6 @@ package com.jahanfoolad.jfs.controller;
 
 import com.jahanfoolad.jfs.domain.File;
 import com.jahanfoolad.jfs.domain.ResponseModel;
-import com.jahanfoolad.jfs.domain.dto.FileDto;
 import com.jahanfoolad.jfs.service.FileService;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,11 +39,11 @@ public class FileController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         responseModel.clear();
         try {
             log.info("get file");
-            Page<File> files = fileService.getFiles(pageNo,perPage);
+            Page<File> files = fileService.getFiles(pageNo, perPage);
             responseModel.setContents(files.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) files.getTotalElements());
@@ -81,8 +79,8 @@ public class FileController {
     }
 
     @PostMapping("/save")
-    public ResponseModel save(@RequestParam("file") MultipartFile file,String title, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        return fileService.createFile(file ,title,httpServletRequest);
+    public ResponseModel save(@RequestParam("file") MultipartFile file, @RequestParam("companyId") Long companyId, String title, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        return fileService.createFile(file, title, httpServletRequest);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -93,7 +91,7 @@ public class FileController {
             log.info("delete file");
             fileService.deleteFile(id);
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());

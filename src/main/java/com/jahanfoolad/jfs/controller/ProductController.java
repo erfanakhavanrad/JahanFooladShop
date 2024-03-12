@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -40,12 +39,12 @@ public class ProductController {
     int fail;
 
     @GetMapping("/getAll")
-    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage,HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             log.info("get product");
             responseModel.clear();
-            Page<Product> products = productService.getProducts(pageNo,perPage);
+            Page<Product> products = productService.getProducts(pageNo, perPage);
             responseModel.setContents(products.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) products.getTotalElements());
@@ -71,7 +70,7 @@ public class ProductController {
             log.info("get product by id");
             responseModel.setContent(productService.getProductById(id));
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
@@ -93,8 +92,8 @@ public class ProductController {
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS", null, Locale.ENGLISH));
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
@@ -107,22 +106,22 @@ public class ProductController {
     }
 
     @PutMapping("/update")
-    public ResponseModel update(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest , HttpServletResponse httpServletResponse){
+    public ResponseModel update(@RequestBody ProductDto productDto, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
-        try{
+        try {
             log.info("update product");
             responseModel.setContent(productService.updateProduct(productDto));
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
             responseModel.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseModel.setError(e.getMessage());
         }
 
-        return  responseModel;
+        return responseModel;
     }
 
     @DeleteMapping("/delete/{id}")
@@ -133,7 +132,7 @@ public class ProductController {
             log.info("delete product");
             productService.deleteProduct(id);
             responseModel.setResult(success);
-        }catch (AccessDeniedException accessDeniedException) {
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());
@@ -146,17 +145,17 @@ public class ProductController {
     }
 
     @PostMapping("/addPrice")
-    public ResponseModel addPrice(@RequestBody PriceDto priceDto,Long productId,Long attributeId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+    public ResponseModel addPrice(@RequestBody PriceDto priceDto, Long attributeId, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
 
         try {
             log.info("create product");
             responseModel.clear();
-            responseModel.setContent(productService.addPrice(priceDto,productId,attributeId, httpServletRequest)); // status not set in some request
+            responseModel.setContent(productService.addPrice(priceDto, attributeId, httpServletRequest));
             responseModel.setResult(success);
         } catch (DataIntegrityViolationException dataIntegrityViolationException) {
             responseModel.setSystemError(dataIntegrityViolationException.getMessage());
-            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS",null, Locale.ENGLISH));
-        }catch (AccessDeniedException accessDeniedException) {
+            responseModel.setError(faMessageSource.getMessage("ALREADY_EXISTS", null, Locale.ENGLISH));
+        } catch (AccessDeniedException accessDeniedException) {
             responseModel.setError(faMessageSource.getMessage("ACCESS_DENIED", null, Locale.ENGLISH));
             responseModel.setResult(fail);
             responseModel.setSystemError(accessDeniedException.getMessage());

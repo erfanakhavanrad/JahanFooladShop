@@ -6,6 +6,7 @@ import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
+import com.jahanfoolad.jfs.validator.RealPersonValidator;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,6 +34,9 @@ public class RealPersonController {
 
     @Autowired
     SmsService smsService;
+
+    @Autowired
+    RealPersonValidator realPersonValidator;
 
     @Value("${SUCCESS_RESULT}")
     int success;
@@ -108,6 +112,7 @@ public class RealPersonController {
 
     @GetMapping("/getAll")
     public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        System.out.println("SaG");
         try {
             responseModel.clear();
             log.info("GET ALL USERS");
@@ -211,6 +216,7 @@ public class RealPersonController {
         try {
             log.info("save RealPerson");
             responseModel.clear();
+            realPersonValidator.addValidator(realPersonDto);
             responseModel.setContent(realPersonService.createRealPerson(realPersonDto, httpServletRequest));
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());

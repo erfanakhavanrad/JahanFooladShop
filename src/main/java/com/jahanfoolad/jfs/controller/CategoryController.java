@@ -1,6 +1,5 @@
 package com.jahanfoolad.jfs.controller;
 
-import com.jahanfoolad.jfs.JfsApplication;
 import com.jahanfoolad.jfs.domain.Category;
 import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.CategoryDto;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 import java.util.Locale;
 
 @Slf4j
@@ -45,7 +43,7 @@ public class CategoryController {
         try {
             responseModel.clear();
             log.info("get all category");
-            Page<Category> categories = categoryService.getCategories(pageNo,perPage);
+            Page<Category> categories = categoryService.getCategories(pageNo, perPage);
             responseModel.setContents(categories.getContent());
             responseModel.setResult(success);
             responseModel.setRecordCount((int) categories.getTotalElements());

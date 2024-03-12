@@ -14,7 +14,7 @@ public class RoleDto implements Serializable {
     @Serial
     private static final long serialVersionUID = 7901772115064466693L;
     private Long id;
-    private List<Privilege> privilege;
+    private List<Privilege> privileges;
     private String roleName;
 
 }

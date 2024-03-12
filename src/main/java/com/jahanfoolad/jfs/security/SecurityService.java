@@ -16,15 +16,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -52,7 +49,7 @@ public class SecurityService {
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
-    public SecurityModel createTokenByUserPasswordAuthentication(String userName)  {
+    public SecurityModel createTokenByUserPasswordAuthentication(String userName) {
         final String token = generateToken(userDetailsService.loadUserByUsername(userName));
         final String refreshToken = refreshToken(userDetailsService.loadUserByUsername(userName));
         userService.changeIsAuthorizationFlag(userService.findByUserName(userName), false);
@@ -62,7 +59,7 @@ public class SecurityService {
 
     public String generateToken(UserDetails user) {
 
-        System.out.println("token for user "+user.getUsername()+" generated at : " + new Date());
+        System.out.println("token for user " + user.getUsername() + " generated at : " + new Date());
         Algorithm algorithm = Algorithm.HMAC256(CONSTANTS.SECRET_KEY.getBytes());
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
@@ -145,7 +142,7 @@ public class SecurityService {
 
     public Person getUserByToken(String recToken) {
         responseModel.clear();
-        String authHeader = recToken ; //request.getHeader(AUTHORIZATION);
+        String authHeader = recToken; //request.getHeader(AUTHORIZATION);
         if (authHeader != null && authHeader.startsWith("Bearer") && authHeader.length() > 8) {
             try {
                 String token = authHeader.substring("Bearer ".length());
@@ -153,14 +150,14 @@ public class SecurityService {
                 JWTVerifier jwtVerifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = jwtVerifier.verify(token);
                 String username = decodedJWT.getSubject();
-                return  userService.findByUserName(username);
+                return userService.findByUserName(username);
             } catch (TokenExpiredException ex) {
                 ex.printStackTrace();
                 return null;
 
             } catch (Exception exc) {
                 exc.printStackTrace();
-                return  null;
+                return null;
             }
         } else {
             throw new RuntimeException("Refresh token is missing");
@@ -184,14 +181,14 @@ public class SecurityService {
             } catch (TokenExpiredException ex) {
                 ex.printStackTrace();
                 responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
+                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID", null, Locale.ENGLISH));
                 responseModel.setSystemError(ex.toString());
                 responseModel.setContent(null);
 
             } catch (Exception exc) {
                 exc.printStackTrace();
                 responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
+                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID", null, Locale.ENGLISH));
                 responseModel.setSystemError(exc.toString());
                 responseModel.setContent(null);
             }
@@ -201,41 +198,41 @@ public class SecurityService {
         return responseModel;
     }
 
-    @Async
-    public Future<ResponseModel> getUserByTokenAsync(HttpServletRequest request) {
-        responseModel.clear();
-        String authHeader = request.getHeader(AUTHORIZATION);
-        if (authHeader != null && authHeader.startsWith("Bearer") && authHeader.length() > 8) {
-            try {
-                String token = authHeader.substring("Bearer ".length());
-                Algorithm algorithm = Algorithm.HMAC256(CONSTANTS.SECRET_KEY.getBytes());
-                JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-                DecodedJWT decodedJWT = jwtVerifier.verify(token);
-                String username = decodedJWT.getSubject();
-
-                responseModel.setResult(success);
-                responseModel.setContent(userService.findByUserName(username));
-
-            } catch (TokenExpiredException ex) {
-                ex.printStackTrace();
-                responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
-                responseModel.setSystemError(ex.toString());
-                responseModel.setContent(null);
-
-            } catch (Exception exc) {
-                exc.printStackTrace();
-                responseModel.setResult(fail);
-                responseModel.setError(faMessageSource.getMessage("UNKNOWN_TRANSACTION_ERROR" , null , Locale.ENGLISH));
-                responseModel.setSystemError(exc.toString());
-                responseModel.setContent(null);
-
-            }
-        } else {
-            throw new RuntimeException("Refresh token is missing");
-        }
-        return new AsyncResult<ResponseModel>(responseModel);
-    }
+//    @Async
+//    public Future<ResponseModel> getUserByTokenAsync(HttpServletRequest request) {
+//        responseModel.clear();
+//        String authHeader = request.getHeader(AUTHORIZATION);
+//        if (authHeader != null && authHeader.startsWith("Bearer") && authHeader.length() > 8) {
+//            try {
+//                String token = authHeader.substring("Bearer ".length());
+//                Algorithm algorithm = Algorithm.HMAC256(CONSTANTS.SECRET_KEY.getBytes());
+//                JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+//                DecodedJWT decodedJWT = jwtVerifier.verify(token);
+//                String username = decodedJWT.getSubject();
+//
+//                responseModel.setResult(success);
+//                responseModel.setContent(userService.findByUserName(username));
+//
+//            } catch (TokenExpiredException ex) {
+//                ex.printStackTrace();
+//                responseModel.setResult(fail);
+//                responseModel.setError(faMessageSource.getMessage("TOKEN_NOT_VALID" , null , Locale.ENGLISH));
+//                responseModel.setSystemError(ex.toString());
+//                responseModel.setContent(null);
+//
+//            } catch (Exception exc) {
+//                exc.printStackTrace();
+//                responseModel.setResult(fail);
+//                responseModel.setError(faMessageSource.getMessage("UNKNOWN_TRANSACTION_ERROR" , null , Locale.ENGLISH));
+//                responseModel.setSystemError(exc.toString());
+//                responseModel.setContent(null);
+//
+//            }
+//        } else {
+//            throw new RuntimeException("Refresh token is missing");
+//        }
+//        return new AsyncResult<ResponseModel>(responseModel);
+//    }
 
     public void usersAuthorizationChanged(Role role) {
         List<Person> users = userService.findByRole(role);

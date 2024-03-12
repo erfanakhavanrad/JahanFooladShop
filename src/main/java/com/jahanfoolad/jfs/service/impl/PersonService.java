@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.util.*;
@@ -61,6 +60,8 @@ public class PersonService<P extends Person> implements UserDetailsService {
 
     String generatedPassword;
 
+    final String USER_ROLE = "USER";
+
     @Resource(name = "faMessageSource")
     private MessageSource faMessageSource;
 
@@ -69,6 +70,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
         Person clonePerson = (Person) person.clone();
         clonePerson.setPassword(generatedPassword);
         person.setPassword(getPassword(generatedPassword));
+        person.setRole(Collections.singletonList(roleService.getRoleByName(USER_ROLE)));
         P savedPerson = personRepository.save(person);
         passwordSendFactory.send(clonePerson, RegisterType.PHONE);
         return savedPerson;
@@ -88,7 +90,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
         }
     }
 
-    public void updateImageUrl(String imgUrl, long uid) throws Exception{
+    public void updateImageUrl(String imgUrl, long uid) throws Exception {
         personRepository.updateImageUrl(uid, imgUrl);
     }
 
@@ -106,7 +108,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(foundPerson.getUserName(), foundPerson.getPassword(), privileges);
     }
 
-    public P findByUserName(String userName){
+    public P findByUserName(String userName) {
         return (P) personRepository.findByUserNameIgnoreCase(userName);
     }
 
@@ -173,7 +175,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
 
 
     private Person setRole(Person users) {
-        List<Role> roles =new ArrayList<>();
+        List<Role> roles = new ArrayList<>();
         users.getRole().forEach(role -> {
             try {
                 roles.add(roleService.getRoleById(role.getId()));
@@ -192,6 +194,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
             loginAttemptService.loginFailed(xfHeader.split(",")[0]);
         return null;
     }
+
     public List<Person> findByRole(Role role) {
         return personRepository.findAllByRole(role);
     }

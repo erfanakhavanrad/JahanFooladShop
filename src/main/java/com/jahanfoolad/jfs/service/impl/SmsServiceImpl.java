@@ -3,9 +3,8 @@ package com.jahanfoolad.jfs.service.impl;
 import com.google.gson.Gson;
 import com.jahanfoolad.jfs.domain.SmsRestResponse;
 import com.jahanfoolad.jfs.service.SmsService;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.MessageSource;
@@ -18,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class SmsServiceImpl implements SmsService {
 
     private final RestTemplate restTemplate;
@@ -73,6 +72,7 @@ public class SmsServiceImpl implements SmsService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, getHttpHeaders());
 
         ResponseEntity<SmsRestResponse> response = this.restTemplate.postForEntity(url, entity, SmsRestResponse.class);
+        log.info("Response SMS " + ((SmsRestResponse) response.getBody()).toString());
         return response.getBody();
     }
 }

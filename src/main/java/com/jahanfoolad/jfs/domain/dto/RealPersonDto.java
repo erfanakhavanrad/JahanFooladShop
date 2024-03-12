@@ -1,5 +1,6 @@
 package com.jahanfoolad.jfs.domain.dto;
 
+import com.jahanfoolad.jfs.domain.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,10 +22,11 @@ public class RealPersonDto implements Serializable {
     private String cellPhone;
     private String email;
     private Boolean verified = false;
-    private Boolean isActive  = true;
-//    private String password;
+    private Boolean isActive = true;
+    //    private String password;
 //    private String encryptedPassword;
     private List<ContactDto> contactList;
+    private List<Role> role;
 
 
     /*

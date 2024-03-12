@@ -6,14 +6,13 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
 @Table(name = "person")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name="user_type",discriminatorType = DiscriminatorType.STRING)
-public class Person extends AbstractEntity implements Cloneable{
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+public class Person extends AbstractEntity implements Cloneable {
 
     @Column(unique = true)
     private String userName;
@@ -42,7 +41,7 @@ public class Person extends AbstractEntity implements Cloneable{
     @Column
     private boolean isActive = true;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.MERGE})
     private List<Contact> contactList = new ArrayList<>();
 
     @Column

@@ -5,12 +5,12 @@ import com.jahanfoolad.jfs.domain.dto.RoleDto;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 public interface RoleService {
     Page<Role> getRoles(Integer pageNo, Integer perPage) throws Exception;
 
     Role getRoleById(Long id) throws Exception;
+
+    Role getRoleByName(String name) throws Exception;
 
     Role createRole(RoleDto roleDto, HttpServletRequest httpServletRequest) throws Exception;
 
