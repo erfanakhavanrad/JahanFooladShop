@@ -1,11 +1,12 @@
 package com.jahanfoolad.jfs.service.impl;
 
 import com.jahanfoolad.jfs.JfsApplication;
-import com.jahanfoolad.jfs.domain.*;
+import com.jahanfoolad.jfs.domain.Contact;
+import com.jahanfoolad.jfs.domain.RealPerson;
+import com.jahanfoolad.jfs.domain.ResponseModel;
 import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.jpaRepository.ContactRepository;
-import com.jahanfoolad.jfs.jpaRepository.PersonRepository;
 import com.jahanfoolad.jfs.jpaRepository.RealPersonRepository;
 import com.jahanfoolad.jfs.security.SecurityService;
 import com.jahanfoolad.jfs.service.RealPersonService;
@@ -19,7 +20,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class RealPersonServiceImpl implements RealPersonService {
@@ -51,7 +55,6 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public RealPerson getRealPersonById(Long id) throws Exception {
-//        realUserRepository.findById(id).get();
         return realPersonRepository.findById(id).orElseThrow(() -> new Exception(faMessageSource.getMessage("REAL_PERSON_NOT_FOUND", null, Locale.ENGLISH)));
     }
 
@@ -66,25 +69,25 @@ public class RealPersonServiceImpl implements RealPersonService {
 
     @Override
     public Page<RealPerson> findByProvince(ContactDto contactDto, Integer pageNo, Integer perPage) {
-        List<Contact> contacts =  contactRepository.findAllByProvince(contactDto.getProvince());
-        return realPersonRepository.findAllByContactListIn(contacts , JfsApplication.createPagination(pageNo , perPage));
+        List<Contact> contacts = contactRepository.findAllByProvince(contactDto.getProvince());
+        return realPersonRepository.findAllByContactListIn(contacts, JfsApplication.createPagination(pageNo, perPage));
     }
 
     @Override
     public Page<RealPerson> findByCity(ContactDto contactDto, Integer pageNo, Integer perPage) {
         List<Contact> contacts = contactRepository.findAllByCity(contactDto.getCity());
-        return realPersonRepository.findAllByContactListIn(contacts ,JfsApplication.createPagination(pageNo , perPage));
+        return realPersonRepository.findAllByContactListIn(contacts, JfsApplication.createPagination(pageNo, perPage));
     }
 
-
-    // Can throw exception in Header
     @Override
     public RealPerson createRealPerson(RealPersonDto realPersonDto, HttpServletRequest request) throws Exception {
         ModelMapper modelMapper = new ModelMapper();
         RealPerson realPerson = modelMapper.map(realPersonDto, RealPerson.class);
-        realPerson.setPassword(generatePassword());
         realPerson.setUserName(realPerson.getCellPhone());
-//        realPerson.setCreatedBy((((Person) securityService.getUserByToken(request).getContent()).getId()));
+        if (realPersonRepository.findByUserName(realPersonDto.getCellPhone()) != null) {
+            forgetPassword(realPersonDto.getCellPhone());
+            return realPerson;
+        }
         return personService.save(realPerson);
     }
 
@@ -117,15 +120,8 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
     @Override
-    public ResponseModel login(RealPerson realPerson, HttpServletRequest request) {
-        try {
-            return personService.login(realPerson, request);
-        } catch (Exception e) {
-            responseModel.setResult(personService.fail);
-            responseModel.setError(e.getMessage());
-            responseModel.setError(e.toString());
-            return responseModel;
-        }
+    public ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception {
+        return personService.login(realPerson, request);
     }
 
     @Override
@@ -140,10 +136,10 @@ public class RealPersonServiceImpl implements RealPersonService {
     SmsService smsService;
 
     @Override
-    public void resetPass(String userName) throws Exception {
+    public void resetPass(String userName) {
         RealPerson byUserName = realPersonRepository.findByUserName(userName);
         byUserName.setConfirmationCode(generatePassword());
-        smsService.sendPasswordSms(byUserName.getCellPhone(),  byUserName.getConfirmationCode());
+        smsService.sendPasswordSms(byUserName.getCellPhone(), byUserName.getConfirmationCode());
         realPersonRepository.save(byUserName);
     }
 
@@ -157,22 +153,14 @@ public class RealPersonServiceImpl implements RealPersonService {
     }
 
 
-     public String generatePassword() {
+    public void forgetPassword(String userName) throws Exception {
+        RealPerson realPersonByUsername = getRealPersonByUsername(userName);
+        personService.save(realPersonByUsername);
+    }
+
+    public String generatePassword() {
         return String.format("%06d", new Random().nextInt(1000000));
     }
-//        public String generatePassword(RealPerson realPerson) {
-//        List<Character> characters = new ArrayList<>();
-//        String lastFourCharacters = realPerson.getCellPhone().substring(realPerson.getCellPhone().length() - 4);
-//        for (char c : lastFourCharacters.toCharArray()) {
-//            characters.add(c);
-//        }
-//        StringBuilder output = new StringBuilder(lastFourCharacters.length());
-//        while (characters.size() != 0) {
-//            int randPicker = (int) (Math.random() * characters.size());
-//            output.append(characters.remove(randPicker));
-//        }
-//        return output.toString();
-//    }
 
 
 }

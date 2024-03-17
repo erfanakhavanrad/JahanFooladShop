@@ -72,7 +72,7 @@ public class SmsServiceImpl implements SmsService {
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, getHttpHeaders());
 
         ResponseEntity<SmsRestResponse> response = this.restTemplate.postForEntity(url, entity, SmsRestResponse.class);
-        log.info("Response SMS " + ((SmsRestResponse) response.getBody()).toString());
+        log.info("SMS Sent to: " + to + " Server response SMS: " + ((SmsRestResponse) response.getBody()).toString());
         return response.getBody();
     }
 }

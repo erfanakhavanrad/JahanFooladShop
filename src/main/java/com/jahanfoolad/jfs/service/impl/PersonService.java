@@ -70,7 +70,10 @@ public class PersonService<P extends Person> implements UserDetailsService {
         Person clonePerson = (Person) person.clone();
         clonePerson.setPassword(generatedPassword);
         person.setPassword(getPassword(generatedPassword));
-        person.setRole(Collections.singletonList(roleService.getRoleByName(USER_ROLE)));
+        Role roleByName = roleService.getRoleByName(USER_ROLE);
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleByName);
+        person.setRole(roles);
         P savedPerson = personRepository.save(person);
         passwordSendFactory.send(clonePerson, RegisterType.PHONE);
         return savedPerson;
@@ -132,7 +135,7 @@ public class PersonService<P extends Person> implements UserDetailsService {
             } else
                 return loginFail(xfHeader, request);
         } else
-            return loginFail(xfHeader, request);
+            return loginFail(xfHeader, request, false);
     }
 
     private String passwordGenerator() {
@@ -143,6 +146,27 @@ public class PersonService<P extends Person> implements UserDetailsService {
 
         System.out.println(" gen pass " + generatedPassword + " enc " + EncyDecyECB.encrypt(pass));
         return JfsApplication.bCryptPasswordEncoder.encode(generatedPassword);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void generateOTP(P person, HttpServletRequest request) throws Exception {
+        String phoneNumber = person.getCellPhone();
+        P foundPerson = (P) personRepository.findByUserNameIgnoreCase(phoneNumber);
+        if (foundPerson != null) {
+            // user exists, send otp
+            generatedPassword = passwordGenerator();
+            foundPerson.setConfirmationCode(getPassword(generatedPassword));
+            personRepository.save(foundPerson);
+//            foundPerson.setConfirmationCode(generatedPassword); // By writing this line I saved myself the trouble of making the Send method dynamic. But I'm gonna make it dynamic and comment this line anyways.
+            passwordSendFactory.dynamicSend(foundPerson, RegisterType.PHONE, "confirmationCode");
+        } else {
+            //user not exists, register
+            Person newPerson = new Person();
+            newPerson.setUserName(phoneNumber);
+            newPerson.setCellPhone(phoneNumber);
+//            newPerson.setPassword();
+            save((P) newPerson);
+        }
     }
 
     private ResponseModel setUserData(P user) throws Exception {
@@ -193,6 +217,15 @@ public class PersonService<P extends Person> implements UserDetailsService {
         else
             loginAttemptService.loginFailed(xfHeader.split(",")[0]);
         return null;
+    }
+
+    private P loginFail(String xfHeader, HttpServletRequest request, Boolean state) {
+        if (xfHeader == null)
+            loginAttemptService.loginFailed(request.getRemoteAddr());
+        else
+            loginAttemptService.loginFailed(xfHeader.split(",")[0]);
+        throw new UsernameNotFoundException(faMessageSource.getMessage("USER_NOT_EXISTS", null, Locale.ENGLISH));
+//        return null;
     }
 
     public List<Person> findByRole(Role role) {

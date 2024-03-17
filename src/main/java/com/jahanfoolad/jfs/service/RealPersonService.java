@@ -26,12 +26,14 @@ public interface RealPersonService {
 
     RealPerson findByMobile(RealPerson realPerson) throws Exception;
 
-    void resetPass(String userName) throws Exception;
+    void resetPass(String userName);
 
     void resetPassConfirm(String userName, String newPassword) throws Exception;
 
-    ResponseModel login(RealPerson realPerson, HttpServletRequest request);
+    ResponseModel login(RealPerson realPerson, HttpServletRequest request) throws Exception;
 
     void resetPass(RealPerson byMobile, String newPassword) throws Exception;
+
+    void forgetPassword(String userName) throws Exception;
 
 }

@@ -88,7 +88,6 @@ public class CorpPersonServiceImpl implements CorpPersonService {
         ModelMapper modelMapper = new ModelMapper();
         Contact contact = modelMapper.map(contactDto, Contact.class);
         List<Contact> contactList = new ArrayList<>();
-        contact.setId(452L);
         contactList.add(contact);
         return corpPersonRepository.findAllByContactListIn(contactList, JfsApplication.createPagination(pageNo, perPage));
     }

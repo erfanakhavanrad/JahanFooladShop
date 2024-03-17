@@ -41,7 +41,7 @@ public class Person extends AbstractEntity implements Cloneable {
     @Column
     private boolean isActive = true;
 
-    @OneToMany(cascade = {CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.MERGE} , fetch = FetchType.EAGER)
     private List<Contact> contactList = new ArrayList<>();
 
     @Column
@@ -50,7 +50,7 @@ public class Person extends AbstractEntity implements Cloneable {
     @Column
     Boolean isAuthorizationChanged = false;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER ,cascade = CascadeType.MERGE)
     @JoinTable(name = "role_person",
             joinColumns =
             @JoinColumn(name = "person_id", referencedColumnName = "id"),

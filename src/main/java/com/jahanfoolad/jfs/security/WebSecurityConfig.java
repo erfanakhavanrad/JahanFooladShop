@@ -84,8 +84,9 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
                         .requestMatchers(HttpMethod.POST, "/realperson/save").permitAll()
                         .requestMatchers(HttpMethod.POST, "/realperson/login").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/realperson/getAll").permitAll() //Remember to remove
-                        .requestMatchers(HttpMethod.GET, "/realperson/forgetPassword").permitAll() //Remember to remove
+                        .requestMatchers(HttpMethod.GET, "/realperson/forgetPassword").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/realperson/forgetPasswordConfirm").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/realperson/oneTimeLogin").permitAll()
                         .requestMatchers(HttpMethod.GET, "/user/forgetPass").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/support").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
@@ -93,7 +94,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/user/getAll").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/getById").authenticated()
                         .requestMatchers(HttpMethod.GET, "/user/activation").authenticated()
-//                .requestMatchers(HttpMethod.PUT, "/realperson/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/corpperson/*").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/basket/*").permitAll()

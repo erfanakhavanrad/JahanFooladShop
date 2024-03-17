@@ -6,6 +6,7 @@ import com.jahanfoolad.jfs.domain.dto.ContactDto;
 import com.jahanfoolad.jfs.domain.dto.RealPersonDto;
 import com.jahanfoolad.jfs.service.RealPersonService;
 import com.jahanfoolad.jfs.service.SmsService;
+import com.jahanfoolad.jfs.service.impl.PersonService;
 import com.jahanfoolad.jfs.validator.RealPersonValidator;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,8 +18,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.Locale;
 
 @Slf4j
@@ -28,6 +31,9 @@ public class RealPersonController {
 
     @Autowired
     RealPersonService realPersonService;
+
+    @Autowired
+    PersonService personService;
 
     @Autowired
     ResponseModel responseModel;
@@ -58,7 +64,7 @@ public class RealPersonController {
         try {
             log.info("forget password");
             responseModel.clear();
-            realPersonService.resetPass(userName);
+            realPersonService.forgetPassword(userName);
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
         } catch (AccessDeniedException accessDeniedException) {
@@ -105,14 +111,27 @@ public class RealPersonController {
     }
 
     @PostMapping(path = "/login")
-    public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) {
-        responseModel.clear();
-        return realPersonService.login(realPerson, request);
+    public ResponseModel login(@RequestBody RealPerson realPerson, HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
+        try {
+            responseModel.clear();
+            realPersonService.login(realPerson, request);
+        } catch (AuthenticationException authenticationException) {
+            responseModel.setResult(fail);
+            responseModel.setError(faMessageSource.getMessage("WRONG_USER_PASS", null, Locale.ENGLISH));
+            responseModel.setError(authenticationException.getMessage());
+        } catch (UsernameNotFoundException usernameNotFoundException) {
+            responseModel.setError(usernameNotFoundException.getMessage());
+            responseModel.setResult(fail);
+            responseModel.setError(faMessageSource.getMessage("USER_NOT_EXISTS", null, Locale.ENGLISH));
+        } catch (Exception e) {
+            responseModel.setResult(fail);
+            responseModel.setError(e.getMessage());
+        }
+        return responseModel;
     }
 
     @GetMapping("/getAll")
     public ResponseModel getAll(@RequestParam Integer pageNo, Integer perPage, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-        System.out.println("SaG");
         try {
             responseModel.clear();
             log.info("GET ALL USERS");
@@ -216,7 +235,7 @@ public class RealPersonController {
         try {
             log.info("save RealPerson");
             responseModel.clear();
-            realPersonValidator.addValidator(realPersonDto);
+//            realPersonValidator.addValidator(realPersonDto);
             responseModel.setContent(realPersonService.createRealPerson(realPersonDto, httpServletRequest));
             responseModel.setResult(success);
             responseModel.setStatus(httpServletResponse.getStatus());
